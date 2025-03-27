@@ -26,9 +26,9 @@
             <div class="row">
                 @if(Cart::count() > 0)
                 <div class="col-lg-6">
-                    <div class="checkout-content">
-                        <a href="login.html" class="content-btn">Click Here To Login</a>
-                    </div>
+{{--                    <div class="checkout-content">--}}
+{{--                        <a href="login.html" class="content-btn">Click Here To Login</a>--}}
+{{--                    </div>--}}
                     <h4>ADDRESS</h4>
                     <div class="row">
                         <div class="col-lg-6">
@@ -79,9 +79,9 @@
                     </div>
                 </div>
                 <div class="col-lg-6">
-                    <div class="checkout-content">
-                        <input type="text" placeholder="Enter Your Coupon Code">
-                    </div>
+{{--                    <div class="checkout-content">--}}
+{{--                        <input type="text" placeholder="Enter Your Coupon Code">--}}
+{{--                    </div>--}}
                     <div class="place-order">
                         <h4>Your Order</h4>
                         <div class="order-total">
@@ -89,12 +89,14 @@
                                 <li>Product <span>Total</span></li>
                                 @foreach($carts as $cart)
                                 <li class="fw-normal">{{$cart->name}} x {{$cart->qty}}
-                                    <span>${{$cart->price * $cart->qty}}</span></li>
+                                    <span>{{number_format($cart->price * $cart->qty)}}VND</span></li>
                                 @endforeach
 
-                                <li class="fw-normal">Subtonal <span>${{$subtotal}}</span></li>
-
-                                <li class="total-price">Total <span>${{$total}}</span></li>
+                                <li class="subtotal">Subtotal <span>{{ number_format($subtotal) }} VND</span></li>
+                                @if($discount > 0)
+                                    <li class="discount">Discount ({{ $discountData['code'] }}) <span>-{{ number_format($discount) }} VND</span></li>
+                                @endif
+                                <li class="cart-total">Total <span>{{ number_format($totalAfterDiscount) }} VND</span></li>
                             </ul>
                             <div class="payment-check">
                                 <div class="pc-item">

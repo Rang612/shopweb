@@ -24,17 +24,20 @@ class Product extends Model
         'track_qty',
         'qty',
         'status',
-        'tag',
     ];
 
     public function brand(){
         return $this->belongsTo(Brand::class,'brand_id','id');
     }
     public function productcategory(){
-        return $this->belongsTo(Category::class,'product_category_id','id');
+        return $this->belongsTo(Category::class,'category_id','id');
 
     }
-    public function product_images(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function subCategory()
+    {
+        return $this->belongsTo(SubCategory::class, 'sub_category_id');
+    }
+    public function productImages(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(ProductImage::class, 'product_id');
 
@@ -50,5 +53,10 @@ class Product extends Model
     public function orderDetail(){
         return $this->hasMany(OrderItem::Detail::class,'product_id','id');
     }
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class, 'product_tag');
+    }
+
 
 }

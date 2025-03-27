@@ -28,6 +28,8 @@
                         <tr>
                             <th>Image</th>
                             <th class="p-name">Product Name</th>
+                            <th>Color</th>
+                            <th>Size</th>
                             <th>Price</th>
                             <th>Quantity</th>
                             <th>Total</th>
@@ -40,20 +42,28 @@
                         <tbody>
                         @foreach($carts as $cart)
                            <tr>
-                            <td class="cart-pic first-row"><img style="height: 170px" src="front/img/products/{{$cart->options->images[0]->path}}" alt=""></td>
-                            <td class="cart-title first-row">
+                               <td class="cart-pic first-row">
+                                   <img style="height: 170px" src="{{ $cart->options->image ?? asset('front/img/default.jpg') }}" alt="Product Image">
+                               </td>
+                               <td class="cart-title first-row">
                                 <h5>{{$cart->name}}</h5>
-                            </td>
-                            <td class="p-price first-row">{{number_format($cart->price, 2)}}</td>
-                            <td class="qua-col first-row">
-                                <div class="quantity">
-                                    <div class="pro-qty">
-                                        <input type="text" value="{{$cart->qty}}" data-rowid="{{$cart->rowId}}">
+                               </td>
+                               <td class="cart-color first-row">
+                                   <h5>{{$cart->options->color}}</h5>
+                               </td>
+                               <td class="cart-color first-row">
+                                   <h5>{{$cart->options->size}}</h5>
+                               </td>
+                                <td class="p-price first-row">{{number_format($cart->price)}}VND</td>
+                                <td class="qua-col first-row">
+                                    <div class="quantity">
+                                        <div class="pro-qty">
+                                            <input type="text" value="{{$cart->qty}}" data-rowid="{{$cart->rowId}}">
+                                        </div>
                                     </div>
-                                </div>
-                            </td>
-                            <td class="total-price first-row">${{number_format($cart->price * $cart->qty, 2)}}</td>
-                            <td class="close-td first-row"><i onclick="window.location='./cart/delete/{{$cart->rowId}}'" class="ti-close"></i></td>
+                                </td>
+                                <td class="total-price first-row">{{number_format($cart->price * $cart->qty)}}VND</td>
+                                <td class="close-td first-row"><i onclick="window.location='./cart/delete/{{$cart->rowId}}'" class="ti-close"></i></td>
                            </tr>
                         @endforeach
                         </tbody>
@@ -66,20 +76,28 @@
                             <a href="#" class="primary-btn up-cart">Update Cart</a>
                         </div>
                         <div class="discount-coupon">
-                            <h6>Dicount Code</h6>
-                            <form action="#" class="coupon-form">
-                                <input type="text" placeholder="Enter your codes">
-                                <button type="submit" class="site-btn coupon-btn">Apply</button>
+                            <h6>Discount Code</h6>
+                            <form method="GET" action="{{ route('cart.index') }}" class="coupon-form">
+                                <input type="text" name="coupon" placeholder="Enter discount code"
+                                       value="{{ request('coupon') }}" class="input-coupon">
+                                <button type="submit" class="button-apply">Apply</button>
                             </form>
                         </div>
-
                     </div>
                     <div class="col-lg-4 offset-lg-4">
                         <div class="proceed-checkout">
-                            <ul>
-                                <li class="subtotal">Subtotal <span>${{$total}}</span></li>
-                                <li class="cart-total">Total <span>${{$subtotal}}</span></li>
-                            </ul>
+                        <ul>
+                            <li class="subtotal">Subtotal <span>{{ number_format($subtotal) }}VND</span></li>
+                            <li class="discount">Discount
+                                <span>
+                                    @if($discount > 0)- {{ number_format($discount) }}VND
+                                    @else
+                                        0VND
+                                    @endif
+                                </span>
+                            </li>
+                            <li class="cart-total">Total <span>{{ number_format($totalAfterDiscount) }}VND</span></li>
+                        </ul>
                             <a href="./checkout" class="proceed-btn">PROCEED TO CHECK OUT</a>
                         </div>
                     </div>
@@ -93,5 +111,46 @@
         </div>
     </div>
 </div>
+{{--<script>--}}
+    {{--$("#apply-discount").click(function(){--}}
+    {{-- $.ajax({--}}
+    {{--     url: '{{ route('cart.applyDiscount') }}',--}}
+    {{--     type: 'post',--}}
+    {{--     data: {code: $("#discount_code").val()} ,--}}
+    {{--     success: function (response) {--}}
+    {{--         if(response.status){--}}
+    {{--             alert(response.message);--}}
+    {{--             location.reload();--}}
+    {{--         }else{--}}
+    {{--             alert(response.message);--}}
+    {{--         }--}}
+    {{--     }--}}
+    {{-- })--}}
+    {{--})--}}
+    {{--$(document).ready(function() {--}}
+    {{--    $("#apply-discount").click(function() {--}}
+    {{--        let discountCode = $("#discount_code").val();--}}
+    {{--        $.ajax({--}}
+    {{--            url: "{{ route('cart.applyDiscount') }}",--}}
+    {{--            type: "POST",--}}
+    {{--            data: {--}}
+    {{--                _token: "{{ csrf_token() }}",--}}
+    {{--                code: discountCode--}}
+    {{--            },--}}
+    {{--            success: function(response) {--}}
+    {{--                if (response.status === "success") {--}}
+    {{--                    $("#discount-message").text(response.message).css("color", "green");--}}
+    {{--                    location.reload(); // Reload trang để cập nhật giỏ hàng--}}
+    {{--                } else {--}}
+    {{--                    $("#discount-message").text(response.message).css("color", "red");--}}
+    {{--                }--}}
+    {{--            },--}}
+    {{--            error: function() {--}}
+    {{--                $("#discount-message").text("Error applying discount.").css("color", "red");--}}
+    {{--            }--}}
+    {{--        });--}}
+    {{--    });--}}
+    {{--});--}}
+{{--</script>--}}
 <!-- Shopping Cart section end -->
 @endsection

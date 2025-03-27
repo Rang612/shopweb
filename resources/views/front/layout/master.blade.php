@@ -33,11 +33,10 @@
 <!--Page Preloder-->
 <div id="preloder">
     <div class="loader">
-
     </div>
 </div>
 <!-- Header sectin begin-->
-<header class="header-section fixed-top">
+<header class="header-section">
     <div class="header-top ">
         <div class="container">
             <div class="ht-left">
@@ -51,10 +50,10 @@
                 </div>
             </div>
             <div class="ht-right">
-                <a href="login.html" class="login-panel"> <i class="fa fa-user"></i>Đăng nhập</a>
+                <a href="login.html" class="login-panel"> <i class="fa fa-user"></i>Login</a>
                 <div class="lan-selector" style="display: flex; align-items: center; gap: 8px;">
-                    <img src="front/img/flag-1.png" alt="Vietnam Flag" style="width: 32px; height: 24px;">
-                    <span>Tiếng Việt</span>
+                    <img src="front/img/flag-1.jpg" alt="Vietnam Flag" style="width: 32px; height: 24px;">
+                    <span>English</span>
                 </div>
                 <div class="top-social">
                     <a href="https://www.facebook.com/share/161FYBzort/" target="_blank"><i class="ti-facebook"></i></a>
@@ -62,7 +61,6 @@
                     <a href="https://www.tiktok.com/@rangrang0612?_t=ZS-8ty2P5gjrM8&_r=1" target="_blank"><i class="fa-brands fa-tiktok"></i></a>
                     <a href="https://www.youtube.com" target="_blank"><i class="fa-brands fa-youtube"></i></a>
                 </div>
-
             </div>
         </div>
     </div>
@@ -77,9 +75,9 @@
                 <div class="col-lg-6 col-md-6">
                     <form action="shop">
                         <div class="advanced-search">
-                            <button type="button" class="category-btn">Sản phẩm</button>
+                            <button type="button" class="category-btn">Product</button>
                             <div class="input-group">
-                                <input name="search" type="text" value="{{ request('search') }}" placeholder="Tìm kiếm">
+                                <input name="search" type="text" value="{{ request('search') }}" placeholder="Search">
                                 <button type="submit"><i class="ti-search"></i></button>
                             </div>
                         </div>
@@ -109,11 +107,14 @@
                                         <tbody>
                                         @foreach(Cart::content() as $cart)
                                         <tr>
-                                            <td class="si-pic"><img style="height: 70px" src="front/img/products/{{$cart->options->images[0]->path}}"></td>
+                                            <td class="si-pic">
+                                                <img style="height: 70px" src="{{ $cart->options->image ?? asset('front/img/default.jpg') }}" alt="Product Image">
+
+                                            </td>
                                             <td class="si-text">
                                                 <div class="product-selected">
                                                     <p>
-                                                        ${{number_format($cart->price, 2)}} x {{$cart->qty}}
+                                                        {{number_format($cart->price)}}VND x {{$cart->qty}}
                                                     </p>
                                                     <h6>{{$cart->name}}</h6>
                                                 </div>
@@ -127,18 +128,17 @@
                                     </table>
                                 </div>
                                 <div class="select-total">
-                                    <span>Tổng tiền:</span>
-                                    <h5>{{Cart::total()}}đ</h5>
+                                    <span>TOTAL:</span>
+                                    <h5>{{Cart::total()}}VND</h5>
 
                                 </div>
                                 <div class="select-button">
-                                    <a href="./cart" class="primary-btn view-card">XEM GIỎ HÀNG</a>
+                                    <a href="./cart" class="primary-btn view-card">VIEW CART</a>
                                     <a href="./checkout" class="primary-btn checkout-bin">CHECK OUT</a>
 
                                 </div>
                             </div>
                         </li>
-                        <li class="cart-pirce">{{Cart::total()}}đ</li>
                     </ul>
                 </div>
             </div>
@@ -188,7 +188,7 @@
                 <div class="nav-menu mobile-menu">
                     <ul>
                         <li class="{{ (request()->segment(1) == '') ? 'active' : '' }}">
-                            <a href="./">Trang chủ</a>
+                            <a href="./">Home</a>
                         </li>
                     </ul>
                 </div>
@@ -215,13 +215,13 @@
             <nav class="nav-menu mobile-menu">
                 <ul>
                     <li class="{{ (request()->segment(1) == 'shop') ? 'active' : '' }}">
-                        <a href="./shop">Sản phẩm</a>
-                    </li>
-                    <li class="{{ (request()->segment(1) == 'blog') ? 'active' : '' }}">
-                        <a href="./blog">Bài viết</a>
+                        <a href="./shop">Product</a>
                     </li>
                     <li class="{{ (request()->segment(1) == 'contact') ? 'active' : '' }}">
-                        <a href="./contact">Liên hệ</a>
+                        <a href="./contact">About Us</a>
+                    </li>
+                    <li class="{{ (request()->segment(1) == 'blog') ? 'active' : '' }}">
+                        <a href="./blog">Blogs</a>
                     </li>
                 </ul>
             </nav>
@@ -349,6 +349,103 @@
 <script src="front/js/owl.carousel.min.js"></script>
 <script src="front/js/owlcarousel2-filter.min.js"></script>
 <script src="front/js/main.js"></script>
-</body>
+<script>
+    $(document).ready(function () {
+        let minPrice = parseInt($('#price-slider').attr('data-min-value')) || 50000;
+        let maxPrice = parseInt($('#price-slider').attr('data-max-value')) || 5000000;
 
+        if (maxPrice < minPrice) {
+            maxPrice = 5000000; // Reset nếu max nhỏ hơn min
+        }
+
+        $("#price-slider").slider({
+            range: true,
+            min: 50000,
+            max: 5000000,
+            values: [minPrice, maxPrice],
+            slide: function (event, ui) {
+                $("#minamount").val(ui.values[0].toLocaleString() + " VND");
+                $("#maxamount").val(ui.values[1].toLocaleString() + " VND");
+            }
+        });
+
+        $("#minamount").val(minPrice.toLocaleString() + " VND");
+        $("#maxamount").val(maxPrice.toLocaleString() + " VND");
+    });
+
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let checkboxes = document.querySelectorAll(".fw-size-choose input[type='checkbox']");
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener("change", function () {
+                let label = document.querySelector(`label[for='${this.id}']`);
+
+                if (this.checked) {
+                    label.classList.add("active");
+                } else {
+                    label.classList.remove("active");
+                }
+            });
+
+            // Kiểm tra và giữ class active nếu đã checked
+            let label = document.querySelector(`label[for='${checkbox.id}']`);
+            if (checkbox.checked) {
+                label.classList.add("active");
+            }
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        $(".product-list").each(function() {
+            $(this).owlCarousel({
+                loop: false, // Không lặp vô hạn, có thể chỉnh thành true nếu muốn
+                margin: 10, // Khoảng cách giữa các item
+                nav: true, // Hiển thị nút điều hướng
+                dots: false, // Ẩn dấu chấm bên dưới
+                responsive: {
+                    0: {
+                        items: 1 // Mobile: 1 sản phẩm trên hàng
+                    },
+                    600: {
+                        items: 2 // Tablet: 2 sản phẩm trên hàng
+                    },
+                    1000: {
+                        items: 4 // Desktop: 4 sản phẩm trên hàng
+                    }
+                }
+            });
+        });
+
+        $(".product-list").hide(); // Ẩn tất cả khi trang load
+        $(".product-list").first().show(); // Chỉ hiển thị danh mục đầu tiên
+
+        $(".filter-control .item").click(function() {
+            var selectedTag = $(this).data("tag");
+
+            $(".filter-control .item").removeClass("active");
+            $(this).addClass("active");
+
+            $(".product-list").hide(); // Ẩn tất cả danh mục sản phẩm
+            if (selectedTag === "all") {
+                $(".product-list").first().fadeIn();
+            } else {
+                $("." + selectedTag).fadeIn();
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('.pd-color-choose input[name="color"]').change(function () {
+            $('.color-label').removeClass('selected'); // Xóa lớp 'selected' khỏi tất cả màu
+            $(this).next('label').addClass('selected'); // Thêm 'selected' vào màu được chọn
+        });
+    });
+
+</script>
+</body>
 </html>

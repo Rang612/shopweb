@@ -1926,32 +1926,46 @@ ol {
 }
 
 .filter-widget .fw-size-choose .sc-item label {
-	font-size: 16px;
-	color: #252525;
-	font-weight: 700;
-	height: 40px;
-	width: 47px;
-	border: 1px solid #ebebeb;
-	text-align: center;
-	line-height: 40px;
-	text-transform: uppercase;
-	cursor: pointer;
+    font-size: 16px;
+    color: #252525;
+    font-weight: 700;
+    height: 40px;
+    width: 47px;
+    border: 1px solid #ebebeb;
+    text-align: center;
+    line-height: 40px;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: inline-block;
 }
 
-.filter-widget .fw-size-choose .sc-item label.active {
-	background: #252525;
-	color: #ffffff;
+.filter-widget .fw-size-choose .sc-item input[type="checkbox"]:checked + label {
+    background: #252525;
+    color: #ffffff;
 }
 
-.filter-widget .fw-tags a {
-	display: inline-block;
-	font-size: 16px;
-	color: #636363;
-	padding: 5px 15px;
-	border: 1px solid #ebebeb;
-	margin-right: 5px;
-	margin-bottom: 9px;
-	border-radius: 2px;
+
+.filter-widget .fw-tags label {
+    display: inline-block;
+    font-size: 16px;
+    color: #636363;
+    padding: 5px 15px;
+    border: 1px solid #ebebeb;
+    margin-right: 5px;
+    margin-bottom: 9px;
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+.filter-widget .fw-tags input {
+    display: none; /* Ẩn checkbox */
+}
+
+/* Khi checkbox được chọn, đổi màu tag */
+.filter-widget .fw-tags input:checked + label {
+    background: #252525;
+    color: #ffffff;
+    border-color: #252525;
 }
 
 .checkmark:after {
@@ -2152,7 +2166,17 @@ ol {
 	color: #252525;
 	font-weight: 700;
 }
+.heart-icon i {
+    font-size: 20px; /* Kích thước icon */
+    color: #00aaff; /* Màu đỏ */
+    cursor: pointer;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
 
+.heart-icon:hover i {
+    color: red; /* Màu hồng khi hover */
+    transform: scale(1.2); /* Hiệu ứng phóng to khi di chuột */
+}
 .product-details .pd-title .heart-icon {
 	color: #252525;
 	font-size: 18px;
@@ -2507,39 +2531,83 @@ ol {
 	background: #252525;
 	border-radius: 50%;
 }
-.specification-table table tr td .cs-yellow {
+.specification-table table tr td .cs-red {
     display: inline-block;
     height: 20px;
     width: 20px;
-    background: #EEEE21;
+    background: red;
     border-radius: 50%;
 }
+
 .specification-table table tr td .cs-blue {
     display: inline-block;
     height: 20px;
     width: 20px;
-    background: #173fc2;
+    background: blue;
     border-radius: 50%;
 }
-.specification-table table tr td .cs-violet {
+
+.specification-table table tr td .cs-yellow {
     display: inline-block;
     height: 20px;
     width: 20px;
-    background: #8230E3;
+    background: yellow;
+    border-radius: 50%;
+}
+
+.specification-table table tr td .cs-green {
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+    background: green;
+    border-radius: 50%;
+}
+
+.specification-table table tr td .cs-black {
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+    background: black;
+    border-radius: 50%;
+}
+
+.specification-table table tr td .cs-white {
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+    background: white;
+    border-radius: 50%;
+    border: 1px solid #ccc; /* Viền để màu trắng dễ nhìn */
+}
+
+.specification-table table tr td .cs-orange {
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+    background: orange;
+    border-radius: 50%;
+}
+
+.specification-table table tr td .cs-pink {
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+    background: pink;
+    border-radius: 50%;
+}
+
+.specification-table table tr td .cs-purple {
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+    background: purple;
     border-radius: 50%;
 }
 .specification-table table tr td .cs-green {
     display: inline-block;
     height: 20px;
     width: 20px;
-    background: #3fb219;
-    border-radius: 50%;
-}
-.specification-table table tr td .cs-red {
-    display: inline-block;
-    height: 20px;
-    width: 20px;
-    background: #e70808;
+    background: green;
     border-radius: 50%;
 }
 
@@ -3104,11 +3172,20 @@ ol {
 }
 
 .checkout-form .place-order .order-total .order-btn .place-btn {
-	padding: 13px 40px 11px;
-	background: #000000;
-	border-color: #000000;
+	/*padding: 13px 40px 11px;*/
+	/*background: #000000;*/
+	/*border-color: #000000;*/
+    background-color: #e7ab3c; /* Đổi màu nền */
+    color: white; /* Đổi màu chữ */
+    border: none; /* Bỏ viền (nếu có) */
+    padding: 10px 20px; /* Điều chỉnh kích thước */
+    font-weight: bold; /* Chữ đậm */
+    border-radius: 5px; /* Bo góc */
+    transition: background-color 0.3s ease;
 }
-
+.checkout-form .place-order .order-total .order-btn .place-btn:hover {
+    background-color: #cc5500; /* Màu khi hover */
+}
 /*---------------------
   Blog Section
 -----------------------*/
@@ -4425,3 +4502,68 @@ ol {
 .nav-search button i {
     color: white;
 }
+.tag-box {
+    display: inline-block;
+    background-color: #f1f1f1; /* Màu nền nhạt */
+    color: #333; /* Màu chữ */
+    padding: 5px 10px;
+    margin: 3px;
+    border-radius: 5px; /* Bo góc */
+    font-size: 14px;
+}
+.add-to-cart-btn {
+    background-color: #fbb034; /* Màu vàng */
+    color: white;
+    border: none;
+    padding: 5px 10px; /* Giảm padding để nút nhỏ hơn */
+    font-size: 12px; /* Giảm kích thước chữ */
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    white-space: nowrap; /* Ngăn chữ xuống hàng */
+    min-width: 100px; /* Giới hạn chiều rộng tối thiểu */
+}
+
+.add-to-cart-btn i {
+    font-size: 14px; /* Giảm kích thước icon */
+}
+
+.add-to-cart-btn:hover {
+    background-color: #e89b00;
+}
+.color-label {
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: 0.3s;
+}
+
+.color-label.selected {
+    border: 2px solid #000; /* Viền đen khi chọn */
+}
+
+.coupon-form {
+    display: flex;
+    gap: 10px; /* Khoảng cách giữa ô nhập và nút Apply */
+    align-items: center; /* Căn giữa theo chiều dọc */
+}
+
+.input-coupon {
+    border: 2px solid #e7ab3c;
+    padding: 10px;
+    border-radius: 5px;
+    flex: 1; /* Chiếm hết phần còn lại của hàng */
+}
+
+.button-apply {
+    background-color: #e7ab3c;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    white-space: nowrap; /* Giữ chữ "Apply" trên một dòng */
+}
+

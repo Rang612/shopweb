@@ -15,11 +15,24 @@ class CheckOutController extends Controller
     public function index()
     {
         $carts = Cart::content();
-        $total = Cart::total();
-        $subtotal = Cart::subtotal();
+        $subtotal = (float) str_replace(',', '', Cart::subtotal());
+        $total = (float) str_replace(',', '', Cart::total());
 
-        return view('front.checkout.index', compact('carts', 'total', 'subtotal'));
+        // Lấy discount từ session (nếu có)
+        $discountData = session('discountData', ['discount' => 0, 'code' => null]);
+        $discount = (float) $discountData['discount'];
+        $totalAfterDiscount = $subtotal - $discount;
+
+        return view('front.checkout.index', compact(
+            'carts',
+            'subtotal',
+            'total',
+            'discount',
+            'totalAfterDiscount',
+            'discountData'
+        ));
     }
+
 
     public function addOrder(Request $request)
     {
@@ -65,7 +78,7 @@ class CheckOutController extends Controller
     private function sendEmail($order, $total, $subtotal){
         $email_to = $order->email;
         Mail::send('front.checkout.email', compact('order','total','subtotal'), function ($message) use($email_to){
-            $message->from('tranhuonggiang6122003@gmail.com', 'Giang Hoa Dung'); //gui tu email nao co ten la gi
+            $message->from('tranhuonggiang6122003@gmail.com', 'XRAY SHOP'); //gui tu email nao co ten la gi
             $message->to($email_to, $email_to);
             $message->subject('Oder Notification');
         });

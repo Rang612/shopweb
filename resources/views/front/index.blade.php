@@ -5,21 +5,21 @@
     <!---->
     <!--Hero section begin-->
     <section class="hero-section ">
-        <div class="hero-items owl-carousel " style="padding-top: 235px;">
+        <div class="hero-items owl-carousel">
             <div class="single-hero-items set-bg" data-setbg="front/img/hero-1.jpg">
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-5">
-                            <span>quần áo người lớn , trẻ em</span>
+                            <span>Adult and children's clothing</span>
                             <h1> Black Friday</h1>
                             <p>
                                 Sale-off
                             </p>
-                            <a href="#" class="primary-btn">Mua ngay</a>
+                            <a href="{{route('front.shop.category', 'woman-product')}}" class="primary-btn">Buy Now</a>
                         </div>
                     </div>
                     <div class="off-card">
-                        <h2>  Giảm giá <span>50%</span></h2>
+                        <h2>  Sale<span>50%</span></h2>
                     </div>
                 </div>
 
@@ -28,16 +28,16 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-5">
-                            <span>quần áo người lớn , trẻ em</span>
+                            <span>Adult and children's clothing</span>
                             <h1> Black Friday</h1>
                             <p>
                                 Sale-off
                             </p>
-                            <a href="#" class="primary-btn">Mua ngay</a>
+                            <a href="{{route('front.shop.category', 'woman-product')}}" class="primary-btn">Buy Now</a>
                         </div>
                     </div>
                     <div class="off-card">
-                        <h2>  Giảm giá<span>50%</span></h2>
+                        <h2> Sale<span>50%</span></h2>
                     </div>
                 </div>
 
@@ -46,16 +46,16 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-7">
-                            <span style="color: white;">quần áo người lớn , trẻ em</span>
+                            <span style="color: white;">Adult and children's clothing</span>
                             <h1> Black Friday</h1>
                             <p style="color: white;">
                                 Sale-off
                             </p>
-                            <a href="#" class="primary-btn" >Mua ngay</a>
+                            <a href="{{route('front.shop.category', 'woman-product')}}" class="primary-btn" >Buy Now</a>
                         </div>
                     </div>
                     <div class="off-card">
-                        <h2>  Giảm giá<span>50%</span></h2>
+                        <h2>Sale<span>50%</span></h2>
                     </div>
                 </div>
 
@@ -118,24 +118,39 @@
                 <div class="col-lg-3">
                     <div class="product-large set-bg" data-setbg="front/img/products/women-large.jpg">
                         <h2>Women's</h2>
-                        <a href="#">Discover more</a>
+                        <a href="{{route('front.shop.category', 'woman-product')}}">Discover more</a>
                     </div>
                 </div>
                 <div class="col-lg-8 offset-lg-1">
                     <div class="filter-control">
                         <ul>
-                            <li class="item active" data-tag="*" data-category="women">Tất cả</li>
-                            <li class="item" data-tag=".Clothing" data-category="women">Áo</li>
-                            <li class="item" data-tag=".HandBag" data-category="women">Quần</li>
-                            <li class="item" data-tag=".Shoes" data-category="women">Váy</li>
-                            <li class="item" data-tag=".Accessories" data-category="women">Đồ bộ</li>
+                            <li class="item active" data-tag="all">Tất cả</li>
+                            @foreach($womenSubCategories as $subCategory)
+                                <li class="item" data-tag="{{ $subCategory->slug }}">{{ $subCategory->name }}</li>
+                            @endforeach
                         </ul>
                     </div>
-                    <div class="product-slider owl-carousel women">
-                        @foreach($womenProducts as $womenProduct)
-                            @include('front.components.product-item', ['product' => $womenProduct])
+
+                    <!-- Owl Carousel cho "Tất cả" sản phẩm -->
+                    <div class="product-slider owl-carousel product-list all">
+                        @foreach($womenProductsBySubcategory as $subCategorySlug => $products)
+                            @foreach($products as $product)
+                                <div class="item">
+                                    @include('front.components.product-item', ['product' => $product])
+                                </div>
+                            @endforeach
                         @endforeach
                     </div>
+                    <!-- Owl Carousel cho từng subCategory -->
+                    @foreach($womenProductsBySubcategory as $subCategorySlug => $products)
+                        <div class="product-slider owl-carousel product-list {{ $subCategorySlug }}" style="display: none;">
+                            @foreach($products as $product)
+                                <div class="item">
+                                    @include('front.components.product-item', ['product' => $product])
+                                </div>
+                            @endforeach
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -146,8 +161,8 @@
         <div class="container">
             <div class="col-lg-6 text-center">
                 <div class="section title">
-                    <h2>Ưu đãi trong tuần</h2>
-                    <p>Giảm giá</p>
+                    <h2>Deals of the week</h2>
+                    <p>Sale-off</p>
                     <div class="product-price">
                         100.000đ
                         <span> Túi xách</span>
@@ -183,19 +198,32 @@
                 <div class="col-lg-8 offset-lg-1">
                     <div class="filter-control">
                         <ul>
-                            <li class="item active" data-tag="*" data-category="men">Tất cả</li>
-                            <li class="item" data-tag=".Clothing" data-category="men">Áo</li>
-                            <li class="item" data-tag=".HandBag" data-category="men">Quần</li>
-                            <li class="item" data-tag=".Shoes" data-category="men">Vest-Comple</li>
-                            <li class="item" data-tag=".Accessories" data-category="men">Đồ bộ</li>
+                            <li class="item active" data-tag="all">Tất cả</li>
+                            @foreach($menSubCategories as $subCategoryMen)
+                                <li class="item" data-tag="{{ $subCategoryMen->slug }}">{{ $subCategoryMen->name }}</li>
+                            @endforeach
                         </ul>
                     </div>
-                    <div class="product-slider owl-carousel men">
-                        @foreach($menProducts as $menProduct)
-                            @include('front.components.product-item', ['product' => $menProduct])
+                    <!-- Owl Carousel cho "Tất cả" sản phẩm -->
+                    <div class="product-slider owl-carousel product-list all">
+                        @foreach($menProductsBySubcategory as $subCategorySlug => $products)
+                            @foreach($products as $product)
+                                <div class="item">
+                                    @include('front.components.product-item', ['product' => $product])
+                                </div>
+                            @endforeach
                         @endforeach
-
                     </div>
+                    <!-- Owl Carousel cho từng subCategory -->
+                    @foreach($menProductsBySubcategory as $subCategorySlug => $products)
+                        <div class="product-slider owl-carousel product-list {{ $subCategorySlug }}" style="display: none;">
+                            @foreach($products as $product)
+                                <div class="item">
+                                    @include('front.components.product-item', ['product' => $product])
+                                </div>
+                            @endforeach
+                        </div>
+                    @endforeach
                 </div>
                 <div class="col-lg-3">
                     <div class="product-large set-bg" data-setbg="front/img/products/man-large.jpg">
