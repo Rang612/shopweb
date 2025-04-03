@@ -9,6 +9,7 @@
     <meta name="keywords" content="codelean, unica, creative, html">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title') | iDouGh Shop</title>
 
     <!-- Google Font -->
@@ -50,17 +51,35 @@
                 </div>
             </div>
             <div class="ht-right">
-                <a href="login.html" class="login-panel"> <i class="fa fa-user"></i>Login</a>
-                <div class="lan-selector" style="display: flex; align-items: center; gap: 8px;">
-                    <img src="front/img/flag-1.jpg" alt="Vietnam Flag" style="width: 32px; height: 24px;">
-                    <span>English</span>
-                </div>
                 <div class="top-social">
                     <a href="https://www.facebook.com/share/161FYBzort/" target="_blank"><i class="ti-facebook"></i></a>
                     <a href="http://www.instagram.com/rang_rang0612" target="_blank"><i class="ti-instagram"></i></a>
                     <a href="https://www.tiktok.com/@rangrang0612?_t=ZS-8ty2P5gjrM8&_r=1" target="_blank"><i class="fa-brands fa-tiktok"></i></a>
                     <a href="https://www.youtube.com" target="_blank"><i class="fa-brands fa-youtube"></i></a>
                 </div>
+                <div class="lan-selector" style="display: flex; align-items: center; gap: 8px;">
+                    <img src="front/img/flag-1.jpg" alt="Vietnam Flag" style="width: 32px; height: 24px;">
+                    <span>English</span>
+                </div>
+                <div class="user-menu">
+                    <a href="#" id="user-icon" class="login-panel">
+                        <i class="fa fa-user"></i>
+                        @if(Auth::check()) {{ Auth::user()->name }} @else Login @endif
+                        <i class="fa fa-caret-down"></i> <!-- Thêm icon tam giác -->
+                    </a>
+                    <ul class="user-dropdown">
+                        @if(Auth::check())
+                            <li><a href="{{ route('account.profile') }}"> <i class="fas fa-user-alt me-2"></i> My Profile</a></li>
+                            <li><a href="#"><i class="fas fa-shopping-bag me-2"></i> My Orders</a></li>
+                            <li><a href="#"><i class="fas fa-heart me-2"></i> Wishlist</a></li>
+                            <li><a href="#"><i class="fas fa-lock me-2"></i> Change Password</a></li>
+                            <li><a href="{{ route('account.logout') }}"> <i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                        @else
+                            <li><a href="{{ route('account.login') }}">Login</a></li>
+                        @endif
+                    </ul>
+                </div>
+
             </div>
         </div>
     </div>
@@ -447,5 +466,22 @@
     });
 
 </script>
+<script>
+    $(document).ready(function () {
+        $("#user-icon").click(function (e) {
+            e.preventDefault();
+            $(".user-dropdown").toggle();
+        });
+
+        // Ẩn menu khi click ra ngoài
+        $(document).click(function (event) {
+            if (!$(event.target).closest('.user-menu').length) {
+                $(".user-dropdown").hide();
+            }
+        });
+    });
+
+</script>
+
 </body>
 </html>

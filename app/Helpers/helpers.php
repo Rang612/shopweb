@@ -11,4 +11,9 @@ function getCategories(){
            ->where('showHome','Yes')
            ->get();
     }
+
+function getProductImage($productId)
+{
+    return \App\Models\ProductImage::where('product_id', $productId)->first();
+}
 ?>

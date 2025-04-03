@@ -77,6 +77,11 @@
                         </div>
                         <div class="discount-coupon">
                             <h6>Discount Code</h6>
+                            @if(session('discountMessage'))
+                                <div class="alert alert-info">
+                                    {{ session('discountMessage') }}
+                                </div>
+                            @endif
                             <form method="GET" action="{{ route('cart.index') }}" class="coupon-form">
                                 <input type="text" name="coupon" placeholder="Enter discount code"
                                        value="{{ request('coupon') }}" class="input-coupon">

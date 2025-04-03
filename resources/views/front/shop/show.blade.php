@@ -136,12 +136,11 @@
                                         <div class="pro-qty">
                                             <input type="number" name="quantity" id="quantity" value="1" min="1" required>
                                         </div>
+                                        <!-- Submit Form -->
+                                        <button type="submit" class="primary-btn pd-card">
+                                            Add To Cart
+                                        </button>
                                     </div>
-
-                                    <!-- Submit Form -->
-                                    <button type="submit" class="primary-btn pd-card">
-                                        Add To Cart
-                                    </button>
                                 </form>
                                 <ul class="pd-tags">
                                     <li><span>BRAND</span>: {{$product->brand->name}}</li>

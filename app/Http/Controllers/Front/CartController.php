@@ -13,24 +13,7 @@ use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
-    //
-//    public function add($id){
-//        $product = Product::findOrFail($id);
-//
-//        Cart::add([
-//           'id' => $id,
-//            'name' => $product->name,
-//            'qty' => 1,
-//            'price' => $product->discount ?? $product->price,
-//            'weight' => $product->weight ?? 0,
-//            'options' => [
-//                'images' => $product->productImage,
-//            ],
-//        ]);
-//        return back();
-//    }
-
-        public function add(Request $request, $id) {
+    public function add(Request $request, $id) {
             $product = Product::findOrFail($id);
 
             // Tìm chi tiết sản phẩm theo size & màu
@@ -64,32 +47,36 @@ class CartController extends Controller
 
             return back()->with('success', 'Sản phẩm đã thêm vào giỏ hàng!');
         }
-
-
-    public function index(Request $request)
+        public function index(Request $request)
     {
         $carts = Cart::content();
-        $subtotal = (float) str_replace(',', '', Cart::subtotal()); // Loại bỏ dấu phẩy, đảm bảo float
+        $subtotal = (float) str_replace(',', '', Cart::subtotal());
         $total = (float) str_replace(',', '', Cart::total());
 
-        // Kiểm tra nếu có mã giảm giá từ request
-        $discountData = ['discount' => 0];
+        // Initialize discount message
+        $discountMessage = session('discountMessage', null);
+
+        // Check if the request contains a coupon
         if ($request->has('coupon')) {
             $discountData = $this->checkDiscount($request->coupon);
+            // Store discount message in session
+            session(['discountMessage' => $discountData['message']]);
+        } else {
+            // Reset message if no coupon is applied
+            session(['discountMessage' => null]);
         }
 
-        $discount = (float) $discountData['discount'];
+        $discount = (float) ($discountData['discount'] ?? 0);
         $totalAfterDiscount = $subtotal - $discount;
 
         return view('front.shop.cart', compact(
             'carts',
             'subtotal',
             'discount',
-            'totalAfterDiscount'
+            'totalAfterDiscount',
+            'discountMessage' // Pass the message to the view
         ));
     }
-
-
 
     public function delete($rowId){
         Cart::remove($rowId);
@@ -106,109 +93,6 @@ class CartController extends Controller
             Cart::update($request->rowId, $request->qty);
         }
     }
-
-//    public function applyDicount()
-//    {
-//        $code = DiscountCoupon::where('code', request('code'))->first();
-////        dd($code); // Debug để kiểm tra dữ liệu
-//
-//        if (!$code) {
-//           return response()->json([
-//               'status' => 'error',
-//               'message' => 'Invalid discount coupon!'
-//           ]);
-//        }
-//
-//        $now = Carbon::now();
-//
-//        if($code->starts_at !=""){
-//            $startDate = Carbon::createFromFormat('Y-m-d H:i:s', $code->starts_at);
-//            if($now->lt($startDate)){
-//                return response()->json([
-//                    'status' => 'error',
-//                    'message' => 'Discount coupon is not started yet!'
-//                ]);
-//            }
-//        }
-//        if($code->expires_at !=""){
-//            $endDate = Carbon::createFromFormat('Y-m-d H:i:s', $code->expires_at);
-//            if($now->gt($endDate)){
-//                return response()->json([
-//                    'status' => 'error',
-//                    'message' => 'Invalid discount coupon!'
-//                ]);
-//            }
-//        }
-//
-//        session()->put('discount', [
-//            'name' => $code->name,
-//            'discount' => $code->discount,
-//            'discount_type' => $code->discount_type,
-//        ]);
-//        return response()->json([
-//            'status' => 'success',
-//            'message' => 'Discount applied successfully!',
-//            'discount' => session('discount')
-//        ]);
-//
-//    }
-
-//    public function checkDiscount($code)
-//    {
-//        $coupon = DiscountCoupon::where('code', $code)->first();
-//
-//        if (!$coupon) {
-//            return [
-//                'status' => 'error',
-//                'message' => 'Invalid discount coupon!',
-//                'discount' => 0
-//            ];
-//        }
-//
-//        $now = Carbon::now();
-//
-//        // Kiểm tra ngày bắt đầu
-//        if (!empty($coupon->starts_at) && $now->lt(Carbon::parse($coupon->starts_at))) {
-//            return [
-//                'status' => 'error',
-//                'message' => 'Discount coupon is not started yet!',
-//                'discount' => 0
-//            ];
-//        }
-//
-//        // Kiểm tra ngày hết hạn
-//        if (!empty($coupon->expires_at) && $now->gt(Carbon::parse($coupon->expires_at))) {
-//            return [
-//                'status' => 'error',
-//                'message' => 'Discount coupon has expired!',
-//                'discount' => 0
-//            ];
-//        }
-//
-//        // Kiểm tra giá trị tối thiểu
-//        $subtotal = (float) str_replace(',', '', Cart::subtotal());
-//        if ($coupon->min_amount && $subtotal < $coupon->min_amount) {
-//            return [
-//                'status' => 'error',
-//                'message' => 'You need to spend at least ' . number_format($coupon->min_amount, 0, ',', '.') . ' VND to use this coupon!',
-//                'discount' => 0
-//            ];
-//        }
-//
-//        // Tính giảm giá
-//        if ($coupon->type === 'percent') {
-//            $discountAmount = (float) $coupon->discount_amount;
-//            $discount = ($subtotal * $discountAmount) / 100;
-//        } else {
-//            $discount = (float) $coupon->discount_amount;
-//        }
-//
-//        return [
-//            'status' => 'success',
-//            'message' => 'Discount applied successfully!',
-//            'discount' => $discount
-//        ];
-//    }
     public function checkDiscount($code)
     {
         $coupon = DiscountCoupon::where('code', $code)->first();
