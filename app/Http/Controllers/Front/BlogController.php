@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class BlogController extends Controller
 {
@@ -30,7 +31,6 @@ class BlogController extends Controller
 
         return view('front.blog.blogs', compact('blogs', 'categories', 'recentBlogs'));
     }
-
 
     public function create()
     {
@@ -63,7 +63,47 @@ class BlogController extends Controller
             $blog->image = $fileName; // chỉ lưu tên file vào DB
         }
         $blog->save();
-
         return redirect()->route('front.blog.index')->with('success', 'Your post has been submitted and is pending admin approval.');
     }
+
+    public function show($id)
+    {
+        $blog = Blog::with('user')->where('is_approved', true)->findOrFail($id);
+
+        $prevBlog = Blog::where('is_approved', true)->where('id', '<', $blog->id)->latest()->first();
+        $nextBlog = Blog::where('is_approved', true)->where('id', '>', $blog->id)->first();
+        $keywords = explode(' ', strtolower($blog->title));
+
+        $relatedBlogsQuery = Blog::where('is_approved', true)
+            ->where('id', '!=', $blog->id);
+
+        foreach ($keywords as $word) {
+            $relatedBlogsQuery->orWhereRaw('LOWER(title) LIKE ?', ['%' . $word . '%']);
+        }
+
+        $relatedBlogs = $relatedBlogsQuery->take(3)->get();
+        $data['blog'] = $blog;
+        $data['relatedBlogs'] = $relatedBlogs;
+        $data['prevBlog'] = $prevBlog;
+        $data['nextBlog'] = $nextBlog;
+        return view('front.blog.blog-detail', $data);
+    }
+    public function comment(Request $request, Blog $blog)
+    {
+        $request->validate([
+            'message' => 'required|string|max:1000',
+        ]);
+
+        $user = Auth::user();
+
+        $blog->blogcomment()->create([
+            'user_id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'meassages' => $request->message,
+        ]);
+        return back()->with('success', 'Your comment has been submitted.');
+    }
+
+
 }

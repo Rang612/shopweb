@@ -56,7 +56,7 @@
                             <h4>Recent Post</h4>
                             <div class="recent-blog">
                                 @foreach($recentBlogs as $rblog)
-                                <a href="#" class="rb-item">
+                                <a href="{{route('front.blog.show', $rblog->id)}}" class="rb-item">
                                     <div class="rb-pic">
                                         <img src="{{ asset('storage/blogs/' . $rblog->image) }}" alt="Recent Post">
                                     </div>
@@ -81,7 +81,7 @@
                         @foreach($blogs as $blog)
                         <div class="col-lg-6 col-sm-6">
                             <div class="blog-item">
-                                <a href="#">
+                                <a href="{{route('front.blog.show', $blog->id)}}">
                                 <div class="bi-pic">
                                     <img src="{{ asset('storage/blogs/' . $blog->image) }}" alt="Blog Image">
                                 </div>

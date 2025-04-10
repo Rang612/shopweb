@@ -1,108 +1,96 @@
 @extends('front.layout.master')
 @section('title', 'Shop')
 @section('body')
-    <div class="blog-details">
+    <!--Breadcrumb section begin(giup dinh vi vi tri ban dang o dau trong web)-->
+    <div class="breacrumb-section">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="blog-detail-title">
-                        <h2>The Personality Trait That Makes People Happier</h2>
-                        <p>travel<span>May 19, 2925</span></p>
+                    <div class="breadcrumb-text">
+                        <a href="{{route('front.home')}}"><i class="fa fa-home"></i>Home</a>
+                        <a href="{{route('front.blog.index')}}">Blogs</a>
+                        <span>View Blog</span>
                     </div>
-                    <div class="blog-large-pic">
-                        <img src="{{ asset('front/img/blog/details.jpg') }}" alt="Blog Detail Image">
                 </div>
-                    <div class="blog-detail-desc">
-                        <p>dday la 1 doan van</p>
+            </div>
+        </div>
+    </div>
+    <div class="blog-details">
+        <div class="container">
+            <div class="row">
+                <!-- Bài viết chính -->
+                <div class="col-lg-12">
+                    <div class="blog-detail-title mt-4 mb-3">
+                        <h2>{{ $blog->title }}</h2>
+                        <p>{{ $blog->category }} <span>{{ $blog->created_at->format('M d, Y') }}</span></p>
                     </div>
-                    <div class="blog-quote">
-                        <p> dday la 1 doan van</p>
+
+                    <div class="blog-large-pic mb-4">
+                        <img src="{{ asset('storage/blogs/' . $blog->image) }}" alt="{{ $blog->title }}">
                     </div>
-                    <div class="blog-more">
+
+                    <div class="blog-detail-desc mb-4">
+                        {!! $blog->content !!}
+                    </div>
+                    @if($blog->quote)
+                        <div class="blog-quote mb-5 p-3 bg-light border-start border-warning">
+                            <p class="mb-0"><em>{{ $blog->quote }}</em></p>
+                        </div>
+                    @endif
+
+                    <div class="posted-by mb-5">
+                        <h5>Post By: {{ $blog->user->name }}</h5>
+                    </div>
+                </div>
+                <!-- Comment Section -->
+                <div class="col-lg-12 mt-5 mb-5">
+                    <div class="comment-block p-4 bg-light rounded">
+                        <h4 class="mb-4">Comments</h4>
+                        {{-- Hiển thị các comment nếu có --}}
+                        @if($blog->blogcomment && $blog->blogcomment->isNotEmpty())
+                            @foreach($blog->blogcomment as $comment)
+                                <div class="mb-3 border-bottom pb-2">
+                                    <strong>{{ $comment->name }}</strong>
+                                    <p class="mb-1">{{ $comment->meassages }}</p>
+                                    <small class="text-muted">{{ $comment->created_at->format('M d, Y H:i') }}</small>
+                                </div>
+                            @endforeach
+                        @else
+                            <p class="text-muted">No comments yet.</p>
+                        @endif
+                        {{-- Form comment nếu đã đăng nhập --}}
+                        @auth
+                            <form action="{{ route('blogs.comment', $blog->id) }}" method="POST" class="comment-form mt-4">
+                                @csrf
+                                <textarea name="message" placeholder="Write your comment..." class="form-control mb-3" rows="4" required></textarea>
+                                <button type="submit" class="site-btn">Send message</button>
+                            </form>
+                        @else
+                            <div class="alert alert-warning mt-4">
+                                You need to <a href="{{ route('account.login') }}" class="text-primary">login</a> to leave a comment.
+                            </div>
+                        @endauth
+                    </div>
+                </div>
+                <!-- Related posts -->
+                <div class="col-lg-12">
+                    <div class="blog-more mt-5 pt-3 border-top">
+                        <h4 class="mb-4">Related Posts</h4>
                         <div class="row">
-                            <div class="col-sm-4">
-                                <img src="{{ asset('front/img/blog/details-1.jpg') }}" alt="Blog More Image">
-                            </div>
-                            <div class="col-sm-4">
-                                <img src="{{ asset('front/img/blog/details-1.jpg') }}" alt="Blog More Image">
-                            </div>
-                            <div class="col-sm-4">
-                                <img src="{{ asset('front/img/blog/details-1.jpg') }}" alt="Blog More Image">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tag-share">
-                        <div class="details-tag">
-                            <ul>
-                                <li><i class="fa fa-tags"></i></li>
-                                <li>Travel</li>
-                                <li>Fashion</li>
-                            </ul>
-                        </div>
-                        <div class="blog-share">
-                            <span>Share:</span>
-                            <div class="social-links">
-                                <a href="#"><i class="fa fa-facebook"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="blog-post">
-                        <div class="row">
-                            <div class="col-lg-5 col-md-6">
-                                <a href="#" class="prev-blog">
-                                    <div class="pb-pic">
-                                        <i class="ti-arrow-left"></i>
-                                        <img src="{{ asset('front/img/blog/details-1.jpg') }}" alt="Previous Blog Image">
-                                    </div>
-                                    <div class="pb-text">
-                                        <span>Previous Post:</span>
-                                        <h5>The Personality Trait That Makes People Happier</h5>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="col-lg-5 col-md-6 offset-lg-2">
-                                <a href="#" class="next-blog">
-                                    <div class="nb-pic">
-                                        <img src="{{ asset('front/img/blog/details-1.jpg') }}" alt="Next Blog Image">
-                                        <i class="ti-arrow-right"></i>
-                                    </div>
-                                    <div class="nb-text">
-                                        <span>Next Post:</span>
-                                        <h5>The Personality Trait That Makes People Happier</h5>
-                                    </div>
-                                </a>
+                            @forelse($relatedBlogs as $related)
+                                <div class="col-sm-4 mb-4">
+                                    <a href="{{ route('front.blog.show', $related->id) }}">
+                                        <img src="{{ asset('storage/blogs/' . $related->image) }}" alt="{{ $related->title }}" style="width: 100%; height: auto;">
+                                        <p class="mt-2 fw-bold">{{ Str::limit($related->title, 50) }}</p>
+                                    </a>
+                                </div>
+                            @empty
+                                <p class="text-muted px-3">No related posts found.</p>
+                            @endforelse
                         </div>
                     </div>
                 </div>
-                    <div class="posted-by">
-                        <div class="pb-pic">
-                            <img src="{{ asset('front/img/blog/details-1.jpg') }}" alt="Posted By Image">
-                        </div>
-                        <div class="pb-text">
-                            <a href="#">
-                                <h5>Shane Lynch</h5>
-                                <p>ddoan van</p>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="leave-comment">
-                        <h4>Leave A Comment</h4>
-                        <form action="#" class="comment-form">
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <input type="text" placeholder="Name">
-                                </div>
-                                <div class="col-lg-6">
-                                    <input type="text" placeholder="Email">
-                                </div>
-                                <div class="col-lg-12">
-                                    <textarea placeholder="Message"></textarea>
-                                    <button type="submit" class="site-btn">Send message</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+
             </div>
         </div>
     </div>

@@ -83,7 +83,7 @@ Route::group(['prefix' => 'account'], function () {
         Route::post('/update-user', [AuthController::class, 'updateProfile'])->name('account.updateProfile');
         Route::get('/blogs/create', [\App\Http\Controllers\Front\BlogController::class, 'create'])->name('blogs.create');
         Route::post('/blogs/store', [\App\Http\Controllers\Front\BlogController::class, 'store'])->name('blogs.store');
-
+        Route::post('/blogs/{blog}/comment', [BlogController::class, 'comment'])->name('blogs.comment');
     });
 });
 Route::get('/contact',[Front\ContactController::class,'contact']);
