@@ -73,7 +73,14 @@
                                 <div class="pd-title">
                                     <span>{{$product->tag}}</span>
                                     <h3 style="display: inline-block; margin-right: 10px;">{{$product->title}}</h3>
-                                    <a href="#" class="heart-icon">
+                                    @php
+                                        $inWishlist = isset($wishlistIds) && in_array($product->id, $wishlistIds);
+                                    @endphp
+
+                                    <a href="javascript:void(0);"
+                                       class="heart-icon wishlist-icon {{ $inWishlist ? 'in-wishlist' : '' }}"
+                                       onclick="addToWishList({{ $product->id }})"
+                                       title="{{ $inWishlist ? 'In your wishlist' : 'Add to wishlist' }}">
                                         <i class="icon_heart_alt"></i>
                                     </a>
                                 </div>
@@ -346,8 +353,30 @@
                 </div>
                 @endforeach
             </div>
-
         </div>
     </div>
     <!-- Realeted Products section end -->
 @endsection
+<script>
+    function addToWishList(id){
+        $.ajax({
+            url: '/add-to-wishlist/' + id,
+            type: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}'
+            },
+            success: function (response) {
+                if (response.status === true) {
+                    let icon = document.querySelector('.wishlist-icon');
+                    if(icon) icon.classList.add('in-wishlist');
+                } else {
+                    window.location.href = "{{ route('account.login') }}";
+                }
+            },
+            error: function () {
+                alert('Có lỗi xảy ra khi thêm vào wishlist!');
+            }
+        });
+    }
+
+</script>

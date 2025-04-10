@@ -38,6 +38,7 @@ class CartController extends Controller
                 $product->compare_price ?? $product->price, // Giá
                 0, // Trọng lượng
                 [
+                    'product_id' => $product->id,           // ✅ Thêm ID sản phẩm gốc
                     'image' => $imagePath,
                     'size' => $productDetail->size,
                     'color' => $productDetail->color,

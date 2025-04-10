@@ -10,7 +10,7 @@
         </a>
     </li>
     <li class="nav-item">
-        <a href="wishlist.php" class="nav-link font-weight-bold">
+        <a href="{{route('account.wishlist')}}" class="nav-link font-weight-bold">
             <i class="fas fa-heart me-2"></i> Wishlist
         </a>
     </li>

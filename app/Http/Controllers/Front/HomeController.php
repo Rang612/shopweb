@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Blog;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Wishlist;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class HomeController extends Controller
@@ -117,13 +119,15 @@ class HomeController extends Controller
                 ->where('status', 1)
                 ->get();
         }
-
+        $wishlistIds = Auth::check()
+            ? Wishlist::where('user_id', Auth::id())->pluck('product_id')->toArray()
+            : [];
         // Gán dữ liệu vào mảng
         $data['womenProductsBySubcategory'] = $womenProductsBySubcategory;
         $data['womenSubCategories'] = $womenSubCategories;
         $data['menProductsBySubcategory'] = $menProductsBySubcategory;
         $data['menSubCategories'] = $menSubCategories;
-
+        $data['wishlistIds'] = $wishlistIds;
         return view('front.index', $data);
     }
 

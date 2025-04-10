@@ -223,7 +223,7 @@ class CheckOutController extends Controller
                 'district' => $request->district,
                 'ward' => $request->ward,
                 'street' => $request->street,
-                'house' => $request->house,
+                'house_number' => $request->house,
                 'postcode_zip' => $request->postcode_zip,
                 'note' => $request->note,
                 'payment_type' => $request->payment_type,
@@ -247,7 +247,7 @@ class CheckOutController extends Controller
             foreach ($carts as $cart) {
                 $data = [
                     'order_id' => $order->id,
-                    'product_id' => $cart->id,
+                    'product_id' => $cart->options->product_id, // ✅ Lấy từ options
                     'qty' => $cart->qty,
                     'name' => $cart->name,
                     'price' => $cart->price,
@@ -255,14 +255,14 @@ class CheckOutController extends Controller
                     'color' => $cart->options->color ?? null,
                     'size' => $cart->options->size ?? null,
                 ];
-                dd($data);
+//                dd($data);
                 OrderItem::create($data);
             }
             // gửi mail xác nhận
             $total = Cart::total();
             $subtotal = Cart::subtotal();
-//            $this->sendEmail($order, $total, $subtotal);
-
+            $this->sendEmail($order, $total, $subtotal);
+//dd($order);
             //xóa giỏ hàng
             Cart::destroy();
             //trả về kết quả
@@ -279,10 +279,16 @@ class CheckOutController extends Controller
     }
     private function sendEmail($order, $total, $subtotal){
         $email_to = $order->email;
-        Mail::send('front.checkout.email', compact('order','total','subtotal'), function ($message) use($email_to){
-            $message->from('tranhuonggiang6122003@gmail.com', 'XRAY SHOP'); //gui tu email nao co ten la gi
+
+        // Ép kiểu tại đây (an toàn)
+        $total = (float) str_replace(',', '', $total);
+        $subtotal = (float) str_replace(',', '', $subtotal);
+
+        Mail::send('front.checkout.email', compact('order', 'total', 'subtotal'), function ($message) use($email_to){
+            $message->from('tranhuonggiang6122003@gmail.com', 'XRAY SHOP');
             $message->to($email_to, $email_to);
-            $message->subject('Oder Notification');
+            $message->subject('Order Notification');
         });
     }
+
 }

@@ -2169,7 +2169,7 @@ ol {
 }
 .heart-icon i {
     font-size: 20px; /* Kích thước icon */
-    color: #00aaff; /* Màu đỏ */
+    color: rgba(51, 49, 49, 0.96); /* Màu đỏ */
     cursor: pointer;
     transition: transform 0.3s ease, color 0.3s ease;
 }
@@ -2178,6 +2178,26 @@ ol {
     color: red; /* Màu hồng khi hover */
     transform: scale(1.2); /* Hiệu ứng phóng to khi di chuột */
 }
+.heart-icon {
+    position: relative;
+}
+
+.wishlist-hover {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 300px;
+    background: #fff;
+    padding: 15px;
+    box-shadow: 0px 5px 10px rgba(0,0,0,0.1);
+    z-index: 999;
+    display: none;
+}
+
+.heart-icon:hover .wishlist-hover {
+    display: block;
+}
+
 .product-details .pd-title .heart-icon {
 	color: #252525;
 	font-size: 18px;
@@ -3235,21 +3255,21 @@ ol {
 	cursor: pointer;
 }
 
-.blog-sidebar .blog-catagory {
+.blog-sidebar .blog-category {
 	margin-bottom: 41px;
 }
 
-.blog-sidebar .blog-catagory h4 {
+.blog-sidebar .blog-category h4 {
 	color: #252525;
 	font-weight: 700;
 	margin-bottom: 14px;
 }
 
-.blog-sidebar .blog-catagory ul li {
+.blog-sidebar .blog-category ul li {
 	list-style: none;
 }
 
-.blog-sidebar .blog-catagory ul li a {
+.blog-sidebar .blog-category ul li a {
 	font-size: 16px;
 	color: #636363;
 	line-height: 39px;
@@ -4720,3 +4740,17 @@ ol {
 .fw-bold {
     font-weight: bold; /* In đậm */
 }
+
+.wishlist-icon i {
+    color: #1e90ff; /* xanh dương khi chưa có */
+    transition: color 0.3s ease;
+}
+
+.wishlist-icon:hover i {
+    color: red; /* đỏ khi hover */
+}
+
+.wishlist-icon.in-wishlist i {
+    color: red; /* đỏ khi đã có trong wishlist */
+}
+

@@ -32,7 +32,7 @@ class Order extends Model
         'notes'
     ];
     public function orderDetail(){
-        return $this->hasMany(Order::class,'order_id','id');
+        return $this->hasMany(OrderItem::class,'order_id','id');
     }
 
     public function city()

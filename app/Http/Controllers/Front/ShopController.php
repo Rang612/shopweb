@@ -8,7 +8,9 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\ProductComment;
 use App\Models\Tag;
+use App\Models\Wishlist;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class ShopController extends Controller
@@ -35,7 +37,10 @@ class ShopController extends Controller
             ->get();
 
 
-        return view('front.shop.show', compact('product', 'categories','brands', 'avgRating', 'relatedProducts','tags'));
+        $wishlistIds = Auth::check()
+            ? Wishlist::where('user_id', Auth::id())->pluck('product_id')->toArray()
+            : [];
+        return view('front.shop.show', compact('product', 'categories','brands', 'avgRating', 'relatedProducts','tags','wishlistIds'));
     }
 
     public function postComment(Request $request){
@@ -81,8 +86,11 @@ class ShopController extends Controller
                 $product->saved_image = 'front/img/default-product.jpg';
             }
         }
+        $wishlistIds = Auth::check()
+            ? Wishlist::where('user_id', Auth::id())->pluck('product_id')->toArray()
+            : [];
 
-       return view('front.shop.index', compact('products', 'brands','categories','tags'));
+       return view('front.shop.index', compact('products', 'brands','categories','tags','wishlistIds'));
     }
 
     private function downloadAndSaveImage($imageUrl, $imageName)

@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Product;
 use App\Models\User;
+use App\Models\Wishlist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -114,5 +116,26 @@ class AuthController extends Controller
         $data['orderItems'] = $orderItems;
 //        dd($data);
         return view('front.account.order-detail', $data);
+    }
+
+    public function wishlist(){
+//       $wishlists = Wishlist::where('user_id', Auth::user()->id)->get();
+//       $data['wishlists'] = $wishlists;
+//        return view('front.account.wishlist', $data);
+        $user = auth()->user();
+
+        // Lấy tất cả wishlist
+        $wishlists = Wishlist::with('product.tags')->where('user_id', $user->id)->get();
+
+        // Lấy tất cả tag_id từ các sản phẩm đã wishlist
+        $tagIds = $wishlists->pluck('product.tags')->flatten()->pluck('id')->unique();
+
+        // Lấy sản phẩm gợi ý có ít nhất 1 tag trùng
+        $recommendedProducts = Product::whereHas('tags', function ($query) use ($tagIds) {
+            $query->whereIn('tags.id', $tagIds);
+        })
+            ->whereNotIn('id', $wishlists->pluck('product_id')) // loại trừ sản phẩm đã wishlist
+            ->paginate(4);
+        return view('front.account.wishlist', compact('wishlists', 'recommendedProducts'));
     }
 }

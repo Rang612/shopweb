@@ -8,8 +8,8 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="breadcrumb-text">
-                        <a href="./index"><i class="fa fa-home"></i>Home</a>
-                        <a href="./checkout">Shop</a>
+                        <a href="{{route('front.home')}}"><i class="fa fa-home"></i>Home</a>
+                        <a href="{{route('front.shop.index')}}">Shop</a>
                         <span>Result</span>
                     </div>
                 </div>
@@ -23,7 +23,7 @@
         <div class="container">
             <div class="col-lg-12">
                 <h4>{{$notification}}</h4>
-                <a href="./" class="primary-btn mt-5">Continue Shopping</a>
+                <a href="{{route('front.home')}}" class="primary-btn mt-5">Continue Shopping</a>
             </div>
         </div>
     </section>

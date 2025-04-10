@@ -100,7 +100,7 @@
                                         <div class="col">
                                             <!-- Title -->
                                             <p class="mb-4 fs-sm fw-bold">
-                                                <a class="text-body" href="product.html">{{$item-> name}} x {{$item ->qty}}</a> <br>
+                                                <a class="text-body" href="product.html">{{$item-> name}} ({{$item->color}} , {{$item->size}} ) x {{$item ->qty}}</a> <br>
                                                 <span class="text-muted">{{ number_format($item->total, 0, ',', '.') }}VND</span>
                                             </p>
                                         </div>
@@ -143,7 +143,7 @@
                                     </li>
                                     <li class="list-group-item d-flex justify-content-between">
                                         <span class="text-capitalize">Discount {{(!empty($order->coupon_code)) ? '('.$order->coupon_code.')' : ''}}</span>
-                                        <span>{{ number_format($order->discount, 0, ',', '.') }} VND</span>
+                                        <span>-{{ number_format($order->discount, 0, ',', '.') }} VND</span>
                                     </li>
                                     <li class="list-group-item d-flex justify-content-between">
                                         <span class="text-capitalize">Shipping</span>

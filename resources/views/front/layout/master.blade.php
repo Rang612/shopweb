@@ -27,6 +27,8 @@
     <link rel="stylesheet" href="front/css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="front/css/style.css" type="text/css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Bootstrap CSS -->
+{{--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">--}}
 </head>
 
 <body>
@@ -70,8 +72,8 @@
                     <ul class="user-dropdown">
                         @if(Auth::check())
                             <li><a href="{{ route('account.profile') }}"> <i class="fas fa-user-alt me-2"></i> My Profile</a></li>
-                            <li><a href="#"><i class="fas fa-shopping-bag me-2"></i> My Orders</a></li>
-                            <li><a href="#"><i class="fas fa-heart me-2"></i> Wishlist</a></li>
+                            <li><a href="{{route('account.orders')}}"><i class="fas fa-shopping-bag me-2"></i> My Orders</a></li>
+                            <li><a href="{{route('account.wishlist')}}"><i class="fas fa-heart me-2"></i> Wishlist</a></li>
                             <li><a href="#"><i class="fas fa-lock me-2"></i> Change Password</a></li>
                             <li><a href="{{ route('account.logout') }}"> <i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
                         @else
@@ -79,7 +81,6 @@
                         @endif
                     </ul>
                 </div>
-
             </div>
         </div>
     </div>
@@ -110,10 +111,36 @@
                             </a>
                         </li>
                         <li class="heart-icon">
-                            <a href="#">
+                            <a href="{{ route('account.wishlist') }}">
                                 <i class="icon_heart_alt"></i>
-                                <span>1</span>
+                                <span>{{ count($wishlists) }}</span>
                             </a>
+                            <div class="wishlist-hover">
+                                <div class="select-items">
+                                    <table>
+                                        <tbody>
+                                        @foreach(collect($wishlists)->take(3) as $wishlist)
+                                            <tr>
+                                                <td class="si-pic">
+                                                    <img style="height: 70px"
+                                                         src="{{ $wishlist->product->productImages->first() ? asset('storage/products/' . $wishlist->product->productImages->first()->image) : asset('front/img/default.jpg') }}"
+                                                         alt="{{ $wishlist->product->title }}">
+                                                </td>
+                                                <td class="si-text">
+                                                    <div class="product-selected">
+                                                        <h6>{{ $wishlist->product->title }}</h6>
+                                                        <p>{{ number_format($wishlist->product->compare_price, 0, ',', '.') }}VND</p>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="select-button">
+                                    <a href="{{ route('account.wishlist') }}" class="primary-btn view-card">VIEW WISHLIST</a>
+                                </div>
+                            </div>
                         </li>
                         <li class="cart-icon">
                             <a href="./cart">
@@ -154,7 +181,6 @@
                                 <div class="select-button">
                                     <a href="./cart" class="primary-btn view-card">VIEW CART</a>
                                     <a href="./checkout" class="primary-btn checkout-bin">CHECK OUT</a>
-
                                 </div>
                             </div>
                         </li>
@@ -240,7 +266,7 @@
                         <a href="./contact">About Us</a>
                     </li>
                     <li class="{{ (request()->segment(1) == 'blog') ? 'active' : '' }}">
-                        <a href="./blog">Blogs</a>
+                        <a href="{{route('front.blog.index')}}">Blogs</a>
                     </li>
                 </ul>
             </nav>
@@ -356,6 +382,20 @@
     </div>
 </footer>
 <!--Footer section end-->
+<!-- Wishlist Modal -->
+<div class="modal fade" id="wishlistModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Success</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+        </div>
+    </div>
+</div>
 <!-- Js Plugins -->
 <script src="front/js/jquery-3.3.1.min.js"></script>
 <script src="front/js/bootstrap.min.js"></script>
@@ -368,6 +408,8 @@
 <script src="front/js/owl.carousel.min.js"></script>
 <script src="front/js/owlcarousel2-filter.min.js"></script>
 <script src="front/js/main.js"></script>
+<!-- Bootstrap JS (bao gồm Popper) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     $(document).ready(function () {
         let minPrice = parseInt($('#price-slider').attr('data-min-value')) || 50000;
@@ -480,7 +522,6 @@
             }
         });
     });
-
 </script>
 
 </body>

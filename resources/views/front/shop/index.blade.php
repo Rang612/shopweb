@@ -53,13 +53,6 @@
                     </div>
                 </div>
                 <div class="product-list-product">
-{{--                    <div class="row">--}}
-{{--                    @foreach($products as $product)--}}
-{{--                        <div class="col-lg-4 col-sm-6">--}}
-{{--                    @include('front.components.product-item', ['product' => $product])--}}
-{{--                        </div>--}}
-{{--                    @endforeach--}}
-{{--                     </div>--}}
                     @if($products->count() > 0)
                         <div class="row">
                             @foreach($products as $product)
