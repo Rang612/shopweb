@@ -22,4 +22,12 @@ class DiscountCoupon extends Model
         'starts_at',
         'expires_at',
     ];
+
+    public function usersUsed()
+    {
+        return $this->belongsToMany(User::class, 'coupon_user', 'coupon_id', 'user_id')
+            ->withTimestamps()
+            ->withPivot('used_at');
+    }
+
 }

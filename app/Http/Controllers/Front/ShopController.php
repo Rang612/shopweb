@@ -43,10 +43,26 @@ class ShopController extends Controller
         return view('front.shop.show', compact('product', 'categories','brands', 'avgRating', 'relatedProducts','tags','wishlistIds'));
     }
 
-    public function postComment(Request $request){
-        ProductComment::create($request->all());
-        return redirect()->back();
+    public function postComment(Request $request)
+    {
+        $user = Auth::user();
+
+        $validated = $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'user_id' => 'required|exists:users,id',
+            'messages' => 'required|string',
+            'rating' => 'required|integer|min:1|max:5',
+        ]);
+
+        $validated['name'] = $user->name;
+        $validated['email'] = $user->email;
+
+        ProductComment::create($validated);
+
+        return redirect()->back()->with('success', 'Your comment has been posted!');
     }
+
+
 
     public function index(Request $request)
     {

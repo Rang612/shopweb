@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Front;
 use App\Http\Controllers\Controller;
 use App\Models\Blog;
 use App\Models\Category;
+use App\Models\DiscountCoupon;
 use App\Models\Product;
 use App\Models\Wishlist;
 use Illuminate\Http\Request;
@@ -95,7 +96,6 @@ class HomeController extends Controller
         $data['products'] = $products;
         $data['menProducts'] = Product::where('is_featured', 'Yes')->where('category_id', 1)->get();
         $data['womenProducts'] = Product::where('is_featured', 'Yes')->where('category_id', 2)->get();
-
         // Xử lý danh mục Women
         $womenCategory = Category::where('slug', 'woman-product')->with('sub_category')->first();
         $womenSubCategories = $womenCategory ? $womenCategory->sub_category : collect();
@@ -122,12 +122,23 @@ class HomeController extends Controller
         $wishlistIds = Auth::check()
             ? Wishlist::where('user_id', Auth::id())->pluck('product_id')->toArray()
             : [];
+        $latestBlogs = Blog::where('is_approved', true)
+            ->orderByDesc('created_at')
+            ->take(6)
+            ->get();
+        $vouchers = DiscountCoupon::where('status', 1)
+            ->where('expires_at', '>', now())
+            ->get();
         // Gán dữ liệu vào mảng
         $data['womenProductsBySubcategory'] = $womenProductsBySubcategory;
         $data['womenSubCategories'] = $womenSubCategories;
         $data['menProductsBySubcategory'] = $menProductsBySubcategory;
         $data['menSubCategories'] = $menSubCategories;
         $data['wishlistIds'] = $wishlistIds;
+        $data['latestBlogs'] = $latestBlogs;
+        $data['vouchers'] = $vouchers;
+
+//        dd($coupons);
         return view('front.index', $data);
     }
 

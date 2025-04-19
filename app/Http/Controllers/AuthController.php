@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Blog;
+use App\Models\Country;
+use App\Models\CustomerAddress;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
@@ -92,6 +95,46 @@ class AuthController extends Controller
         // Redirect back with a success message
         return back()->with('success', 'Your information has been updated!');
     }
+    public function updateAddress(Request $request)
+    {
+        $user = Auth::user();
+
+        $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'country_name' => 'required|string|max:255',
+            'district' => 'nullable|string|max:255',
+            'ward' => 'nullable|string|max:255',
+            'street' => 'nullable|string|max:255',
+            'house_number' => 'nullable|string|max:255',
+            'zip' => 'nullable|string|max:255',
+        ]);
+
+        // Find country ID by name
+        $country = Country::where('name', 'LIKE', "%{$request->country_name}%")->first();
+
+        if (!$country) {
+            return back()->withErrors(['country_name' => 'The specified country was not found.']);
+        }
+
+        $data = $request->only([
+            'first_name', 'last_name',
+            'district', 'ward', 'street',
+            'house_number', 'zip'
+        ]);
+
+        $data['email'] = $user->email;
+        $data['mobile'] = $user->phone;
+        $data['country_id'] = $country->id;
+
+        CustomerAddress::updateOrCreate(
+            ['user_id' => $user->id],
+            $data
+        );
+
+        return back()->with('success', 'Address updated successfully.');
+    }
+
     public function logout()
     {
         Auth::logout();
@@ -137,5 +180,12 @@ class AuthController extends Controller
             ->whereNotIn('id', $wishlists->pluck('product_id')) // loại trừ sản phẩm đã wishlist
             ->paginate(4);
         return view('front.account.wishlist', compact('wishlists', 'recommendedProducts'));
+    }
+
+    public function blog(){
+        $user = Auth::user();
+        $blogs = Blog::where('user_id', $user->id)->orderBy('created_at', 'desc')->get();
+        $data['blogs'] = $blogs;
+        return view('front.account.blog', $data);
     }
 }

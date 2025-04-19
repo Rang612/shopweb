@@ -15,7 +15,14 @@
         </div>
     </div>
     <section class=" section-11 ">
+
         <div class="container  mt-5">
+            @if(session('success'))
+                <div class="alert alert-success">{{ session('success') }}</div>
+            @endif
+            @if(session('error'))
+                <div class="alert alert-danger">{{ session('error') }}</div>
+            @endif
             <div class="row">
                 <div class="col-md-3">
                         @include('front.account.common.sidebar')
@@ -25,13 +32,12 @@
                         <div class="card-header">
                             <h2 class="h5 mb-0 pt-2 pb-2">Order: {{$order->id}}</h2>
                         </div>
-
                         <div class="card-body pb-0">
                             <!-- Info -->
                             <div class="card card-sm">
                                 <div class="card-body bg-light mb-3">
                                     <div class="row">
-                                        <div class="col-6 col-lg-3">
+                                        <div class="col-6 col-lg-2">
                                             <!-- Heading -->
                                             <h6 class="heading-xxxs text-muted">Order No:</h6>
                                             <!-- Text -->
@@ -39,7 +45,7 @@
                                                 {{$order->id}}
                                             </p>
                                         </div>
-                                        <div class="col-6 col-lg-3">
+                                        <div class="col-6 col-lg-2">
                                             <!-- Heading -->
                                             <h6 class="heading-xxxs text-muted">Shipped date:</h6>
                                             <!-- Text -->
@@ -48,7 +54,7 @@
                                                     {{\Carbon\Carbon::parse($order->shipped_date)->format('d M, Y')}}                                                </time>
                                             </p>
                                         </div>
-                                        <div class="col-6 col-lg-3">
+                                        <div class="col-6 col-lg-2">
                                             <!-- Heading -->
                                             <h6 class="heading-xxxs text-muted">Status:</h6>
                                             <!-- Text -->
@@ -64,6 +70,23 @@
                                                 @endif
                                             </p>
                                         </div>
+                                        <div class="col-6 col-lg-3">
+                                            <!-- Heading -->
+                                            <h6 class="heading-xxxs text-muted">Payment Status:</h6>
+                                            <!-- Text -->
+                                            <p class="mb-0 fs-sm fw-bold">
+                                                @if($order->payment_status == 'pending')
+                                                    <span class="badge bg-warning">Pending</span>
+                                                @elseif($order->payment_status == 'paid')
+                                                    <span class="badge bg-success">Paid</span>
+                                                @elseif($order->payment_status == 'cod')
+                                                    <span class="badge bg-info">COD</span>
+                                                @elseif($order->payment_status == 'unpaid')
+                                                    <span class="badge bg-danger">Unpaid</span>
+                                                @endif
+                                            </p>
+                                        </div>
+
                                         <div class="col-6 col-lg-3">
                                             <!-- Heading -->
                                             <h6 class="heading-xxxs text-muted">Order Amount:</h6>
@@ -154,12 +177,106 @@
                                         <span>{{ number_format($order->grand_total, 0, ',', '.') }} VND</span>
                                     </li>
                                 </ul>
+                                @php
+                                    $remainingSeconds = \Carbon\Carbon::now()->diffInSeconds(
+                                        \Carbon\Carbon::parse($order->created_at)->addHours(24),
+                                        false // ✅ Cho phép trả về số âm nếu đã hết hạn
+                                    );
+                                @endphp
+                            @if(in_array($order->status, ['pending', 'processing']))
+                                    <div class="d-flex justify-content-end gap-2 mt-3 flex-wrap">
+                                        <style>
+                                            .order-timer-btn {
+                                                min-width: 220px;
+                                                height: 44px;
+                                                display: inline-flex;
+                                                align-items: center;
+                                                justify-content: center;
+                                                white-space: nowrap;
+                                                padding: 0 16px;
+                                                font-weight: 600;
+                                                font-size: 16px;
+                                            }
+
+                                            .order-timer-countdown {
+                                                display: inline-block;
+                                                width: 80px;
+                                                text-align: center;
+                                                font-variant-numeric: tabular-nums;
+                                            }
+                                        </style>
+                                    @if($order->payment_status === 'pending' &&
+                                            $order->status === 'pending' &&
+                                            $remainingSeconds > 0 &&
+                                            $order->payment_method_id === 2)
+                                            <a href="{{ route('vnpay.checkout', $order->id) }}" class="btn btn-warning text-white  w-auto order-timer-btn" id="payment-button">
+                                                Pay Now (<span class="order-timer-countdown">--:--:--</span>)
+                                            </a>
+                                        @endif
+                                        <!-- Button mở modal huỷ đơn -->
+                                        <button type="button" class="btn btn-danger bg-danger w-auto text-white" data-bs-toggle="modal" data-bs-target="#cancelOrderModal">
+                                            Cancel Order
+                                        </button>
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+        <!-- Modal -->
+        <div class="modal fade" id="cancelOrderModal" tabindex="-1" aria-labelledby="cancelOrderModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="cancelOrderModalLabel">Confirm Cancellation</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to cancel this order?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary w-auto text-white px-4" data-bs-dismiss="modal">No</button>
 
+                        <!-- Cancel form -->
+                        <form action="{{ route('orders.cancel', $order->id) }}" method="POST" class="d-inline-block">
+                            @csrf
+                            @method('PUT')
+                            <button type="submit" class="btn btn-danger bg-danger text-white">Yes, Cancel Order</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+            let remainingTime = {{ $remainingSeconds }};
+            const countdownEl = document.querySelector('.order-timer-countdown');
+            const payNowBtn = document.getElementById('payment-button');
+
+            function updateCountdown() {
+            if (!countdownEl || !payNowBtn) return;
+
+            if (remainingTime <= 0) {
+            countdownEl.textContent = 'Expired';
+            payNowBtn.classList.add('disabled');
+            payNowBtn.href = 'javascript:void(0)';
+            return;
+        }
+
+            const hours = Math.floor(remainingTime / 3600);
+            const minutes = Math.floor((remainingTime % 3600) / 60);
+            const seconds = remainingTime % 60;
+
+            countdownEl.textContent =
+            `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+            remainingTime--;
+        }
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+        });
+    </script>
 @endsection

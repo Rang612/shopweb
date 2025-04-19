@@ -62,7 +62,8 @@
                                     </div>
                                     <div class="rb-text">
                                         <h6>{{$rblog->title}}</h6>
-                                        <p>{{$rblog->category}}<span>{{ $rblog->created_at->format('M d, Y') }}</span></p>
+                                        <p>{{$rblog->category}}</p>
+                                        <p><span>{{ $rblog->created_at->format('M d, Y') }}</span></p>
                                     </div>
                                 </a>
                                 @endforeach
@@ -83,7 +84,7 @@
                             <div class="blog-item">
                                 <a href="{{route('front.blog.show', $blog->id)}}">
                                 <div class="bi-pic">
-                                    <img src="{{ asset('storage/blogs/' . $blog->image) }}" alt="Blog Image">
+                                    <img src="{{ asset('storage/blogs/' . $blog->image) }}" alt="Blog Image" style="height: 200px; width: 100%; object-fit: cover; border-radius: 5px;">
                                 </div>
                                 <div class="bi-text">
                                     <h4>{{ $blog->title }}</h4>

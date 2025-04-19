@@ -1,7 +1,9 @@
 @extends('front.layout.master')
 @section('title','Product')
 @section('body')
-     <!--Breadcrumb section begin(giup dinh vi vi tri ban dang o dau trong web)-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+
+    <!--Breadcrumb section begin(giup dinh vi vi tri ban dang o dau trong web)-->
      <div class="breacrumb-section">
         <div class="container">
             <div class="row">
@@ -163,16 +165,33 @@
                                         @endif
                                     </li>
                                 </ul>
+                                @php
+                                    $productUrl = urlencode(url('/shop/product/' . $product->id));
+                                @endphp
+
                                 <div class="pd-share">
                                     <div class="p-code"><span>Sku:</span> {{$product->sku}}</div>
                                     <div class="pd-social">
-                                        <a href="https://www.facebook.com/share/161FYBzort/" target="_blank"><i class="ti-facebook"></i></a>
-                                        <a href="http://www.instagram.com/rang_rang0612" target="_blank"><i class="ti-instagram"></i></a>
-                                        <a href="https://www.tiktok.com/@rangrang0612?_t=ZS-8ty2P5gjrM8&_r=1" target="_blank"><i class="fa-brands fa-tiktok"></i></a>
-                                        <a href="https://www.youtube.com" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+                                        <!-- Facebook Share -->
+                                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ $productUrl }}"
+                                           target="_blank" title="Share on Facebook">
+                                            <i class="ti-facebook"></i>
+                                        </a>
+
+                                        <!-- Messenger Share -->
+                                        <a href="https://www.facebook.com/dialog/send?link={{ $productUrl }}&app_id={{ env('FB_APP_ID') }}&redirect_uri={{ $productUrl }}"
+                                           target="_blank" title="Share on Messenger">
+                                            <i class="fab fa-facebook-messenger"></i>
+                                        </a>
+
+                                        <!-- Instagram (mở trang IG + copy link tự động) -->
+                                        <a href="https://www.instagram.com/" target="_blank" onclick="copyProductLink('{{ url('/shop/product/' . $product->id) }}')" title="Copy link & share on Instagram">
+                                            <i class="ti-instagram"></i>
+                                        </a>
                                     </div>
                                 </div>
-                        </div>
+
+                            </div>
                     </div>
                     </div>
                     <div class="product-tab">
@@ -288,44 +307,94 @@
                                             <div class="at-reply">{{$productComment->messages}}</div>
                                         </div>
                                         @endforeach
-                                    <div class="leave-comment">
-                                        <h4>Leave A Comment</h4>
-                                        <form action="" method="post" class="comment-form">
-                                            @csrf
-                                            <input type="hidden" name="product_id" value="{{$product->id}}">
-                                            <input type="hidden" name="user_id" value="{{Illuminate\Support\Facades\Auth::user()->id ?? null}}">
-                                            <div class="row">
-                                                <div class="col-lg-6">
-                                                    <input type="text" placeholder="Name" name="name">
-                                                </div>
-                                                <div class="col-lg-6">
-                                                    <input type="text" placeholder="Email" name="email">
-                                                </div>
-                                                <div class="col-lg-12">
-                                                    <textarea placeholder="Messages" name="messages"></textarea>
-                                                    <div class="rate">
-                                                        <div class="personal-rating">
-                                                            <h6>Your Rating</h6>
-                                                            <div class="rate">
-                                                                <input type="radio" id="star5" name="rating" value="5" />
-                                                                <label for="star5" title="text">5 stars</label>
-                                                                <input type="radio" id="star4" name="rating" value="4" />
-                                                                <label for="star4" title="text">4 stars</label>
-                                                                <input type="radio" id="star3" name="rating" value="3" />
-                                                                <label for="star3" title="text">3 stars</label>
-                                                                <input type="radio" id="star2" name="rating" value="2" />
-                                                                <label for="star2" title="text">2 stars</label>
-                                                                <input type="radio" id="star1" name="rating" value="1" />
-                                                                <label for="star1" title="text">1 star</label>
+{{--                                    <div class="leave-comment">--}}
+{{--                                        <h4>Leave A Comment</h4>--}}
+{{--                                        <form action="" method="post" class="comment-form">--}}
+{{--                                            @csrf--}}
+{{--                                            <input type="hidden" name="product_id" value="{{$product->id}}">--}}
+{{--                                            <input type="hidden" name="user_id" value="{{Illuminate\Support\Facades\Auth::user()->id ?? null}}">--}}
+{{--                                            <div class="row">--}}
+{{--                                                <div class="col-lg-6">--}}
+{{--                                                    <input type="text" placeholder="Name" name="name">--}}
+{{--                                                </div>--}}
+{{--                                                <div class="col-lg-6">--}}
+{{--                                                    <input type="text" placeholder="Email" name="email">--}}
+{{--                                                </div>--}}
+{{--                                                <div class="col-lg-12">--}}
+{{--                                                    <textarea placeholder="Messages" name="messages"></textarea>--}}
+{{--                                                    <div class="rate">--}}
+{{--                                                        <div class="personal-rating">--}}
+{{--                                                            <h6>Your Rating</h6>--}}
+{{--                                                            <div class="rate">--}}
+{{--                                                                <input type="radio" id="star5" name="rating" value="5" />--}}
+{{--                                                                <label for="star5" title="text">5 stars</label>--}}
+{{--                                                                <input type="radio" id="star4" name="rating" value="4" />--}}
+{{--                                                                <label for="star4" title="text">4 stars</label>--}}
+{{--                                                                <input type="radio" id="star3" name="rating" value="3" />--}}
+{{--                                                                <label for="star3" title="text">3 stars</label>--}}
+{{--                                                                <input type="radio" id="star2" name="rating" value="2" />--}}
+{{--                                                                <label for="star2" title="text">2 stars</label>--}}
+{{--                                                                <input type="radio" id="star1" name="rating" value="1" />--}}
+{{--                                                                <label for="star1" title="text">1 star</label>--}}
+{{--                                                            </div>--}}
+{{--                                                        </div>--}}
+{{--                                                    </div>--}}
+{{--                                                    <button type="submit" class="site-btn">Send Messages</button>--}}
+{{--                                                </div>--}}
+{{--                                            </div>--}}
+{{--                                        </form>--}}
+{{--                                    </div>--}}
+                                            <div class="leave-comment mt-5">
+                                                <h4>Leave A Comment</h4>
+                                                @if(session('success'))
+                                                    <div class="alert alert-success">
+                                                        {{ session('success') }}
+                                                    </div>
+                                                @endif
+
+                                                @auth
+                                                    <form action="{{ route('product.comment', $product->id) }}" method="POST" class="comment-form">
+                                                        @csrf
+                                                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                                        <input type="hidden" name="user_id" value="{{ Auth::id() }}">
+
+                                                        <div class="row co-item align-items-center mb-3">
+                                                            <div class="col-auto">
+                                                                <div class="avatar-pic">
+                                                                    <img src="{{ asset('front/img/user/' . (Auth::user()->avatar ?? 'default-avatar.png')) }}" alt="User Avatar" style="width: 63px; height: 63px; border-radius: 50%;">
+                                                                </div>
+                                                            </div>
+                                                            <div>
+                                                                <h5 class="mt-2">{{ Auth::user()->name }}</h5>
                                                             </div>
                                                         </div>
+
+                                                        <div class="form-group mb-3">
+                                                            <label class="mb-2">Your Rating</label>
+                                                            <div class="star-rating">
+                                                                @for ($i = 5; $i >= 1; $i--)
+                                                                    <input type="radio" id="star{{ $i }}" name="rating" value="{{ $i }}">
+                                                                    <label for="star{{ $i }}">&#9733;</label>
+                                                                @endfor
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="mb-3">
+                                                            <textarea class="form-control" name="messages" rows="4" placeholder="Write your comment..." required></textarea>
+                                                        </div>
+
+                                                        <button type="submit" class="site-btn">Send Comment</button>
+                                                    </form>
+                                                @else
+                                                    <div class="alert alert-warning mt-3">
+                                                        Please <a href="{{ route('account.login') }}" class="text-primary">log in</a> to leave a comment.
                                                     </div>
-                                                    <button type="submit" class="site-btn">Send Messages</button>
-                                                </div>
+                                                @endauth
+
+
                                             </div>
-                                        </form>
+
                                     </div>
-                                  </div>
                                 </div>
                             </div>
                             </div>
@@ -360,7 +429,7 @@
 <script>
     function addToWishList(id){
         $.ajax({
-            url: '/add-to-wishlist/' + id,
+            url: '/wishlist/add-to-wishlist/' + id,
             type: 'POST',
             data: {
                 _token: '{{ csrf_token() }}'
@@ -378,5 +447,16 @@
             }
         });
     }
+
+    function copyProductLink(link) {
+        navigator.clipboard.writeText(link)
+            .then(() => {
+                alert('Link copied! Open Instagram and paste it in your story or bio.');
+            })
+            .catch(err => {
+                alert('Failed to copy link.');
+            });
+    }
+
 
 </script>

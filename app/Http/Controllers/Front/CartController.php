@@ -10,27 +10,24 @@ use App\Models\ProductImage;
 use Carbon\Carbon;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller
 {
     public function add(Request $request, $id) {
             $product = Product::findOrFail($id);
-
             // Tìm chi tiết sản phẩm theo size & màu
             $productDetail = ProductDetail::where('product_id', $id)
                 ->where('size', $request->size)
                 ->where('color', $request->color)
                 ->first();
-
             if (!$productDetail) {
                 return back()->with('error', 'Size hoặc màu không hợp lệ!');
             }
             // Lấy ảnh từ cột image trong bảng product_images
             $productImage = ProductImage::where('product_id', $id)->value('image');
-
             // Kiểm tra nếu không có ảnh thì dùng ảnh mặc định
             $imagePath = $productImage ? asset('storage/products/' . $productImage) : asset('front/img/default-product.jpg');
-
             Cart::add(
                 $productDetail->id, // ID biến thể sản phẩm
                 $product->title, // Tên sản phẩm
@@ -44,41 +41,8 @@ class CartController extends Controller
                     'color' => $productDetail->color,
                 ]
             );
-//            dd(Cart::content());
-
             return back()->with('success', 'Sản phẩm đã thêm vào giỏ hàng!');
         }
-        public function index(Request $request)
-    {
-        $carts = Cart::content();
-        $subtotal = (float) str_replace(',', '', Cart::subtotal());
-        $total = (float) str_replace(',', '', Cart::total());
-
-        // Initialize discount message
-        $discountMessage = session('discountMessage', null);
-
-        // Check if the request contains a coupon
-        if ($request->has('coupon')) {
-            $discountData = $this->checkDiscount($request->coupon);
-            // Store discount message in session
-            session(['discountMessage' => $discountData['message']]);
-        } else {
-            // Reset message if no coupon is applied
-            session(['discountMessage' => null]);
-        }
-
-        $discount = (float) ($discountData['discount'] ?? 0);
-        $totalAfterDiscount = $subtotal - $discount;
-
-        return view('front.shop.cart', compact(
-            'carts',
-            'subtotal',
-            'discount',
-            'totalAfterDiscount',
-            'discountMessage' // Pass the message to the view
-        ));
-    }
-
     public function delete($rowId){
         Cart::remove($rowId);
         return back();
@@ -94,8 +58,113 @@ class CartController extends Controller
             Cart::update($request->rowId, $request->qty);
         }
     }
+//    public function checkDiscount($code)
+//    {
+//        $coupon = DiscountCoupon::where('code', $code)->first();
+//
+//        if (!$coupon) {
+//            return [
+//                'status' => 'error',
+//                'message' => 'Invalid discount coupon!',
+//                'discount' => 0
+//            ];
+//        }
+//
+//        $now = Carbon::now();
+//
+//        // Kiểm tra ngày bắt đầu
+//        if (!empty($coupon->starts_at) && $now->lt(Carbon::parse($coupon->starts_at))) {
+//            return [
+//                'status' => 'error',
+//                'message' => 'Discount coupon is not started yet!',
+//                'discount' => 0
+//            ];
+//        }
+//
+//        // Kiểm tra ngày hết hạn
+//        if (!empty($coupon->expires_at) && $now->gt(Carbon::parse($coupon->expires_at))) {
+//            return [
+//                'status' => 'error',
+//                'message' => 'Discount coupon has expired!',
+//                'discount' => 0
+//            ];
+//        }
+//
+//        // Kiểm tra giá trị tối thiểu
+//        $subtotal = (float) str_replace(',', '', Cart::subtotal());
+//        if ($coupon->min_amount && $subtotal < $coupon->min_amount) {
+//            return [
+//                'status' => 'error',
+//                'message' => 'You need to spend at least ' . number_format($coupon->min_amount, 0, ',', '.') . ' VND to use this coupon!',
+//                'discount' => 0
+//            ];
+//        }
+//
+//        // Tính giảm giá
+//        if ($coupon->type === 'percent') {
+//            $discountAmount = (float) $coupon->discount_amount;
+//            $discount = ($subtotal * $discountAmount) / 100;
+//        } else {
+//            $discount = (float) $coupon->discount_amount;
+//        }
+//
+//        $discountData = [
+//            'status' => 'success',
+//            'message' => 'Discount applied successfully!',
+//            'discount' => $discount,
+//            'code' => $coupon->code
+//        ];
+//
+//        // LƯU DISCOUNT VÀO SESSION
+//        session(['discountData' => $discountData]);
+//
+//        return $discountData;
+//    }
+
+    public function index(Request $request)
+    {
+        $carts = Cart::content();
+        $subtotal = (float) str_replace(',', '', Cart::subtotal());
+
+        $discount = 0;
+        $discountMessage = null;
+
+        if ($request->has('coupon')) {
+            if (!auth()->check()) {
+                $discountMessage = 'Please login to use discount code!';
+            } else {
+                $discountData = $this->checkDiscount($request->coupon);
+                $discountMessage = $discountData['message'];
+                $discount = (float) ($discountData['discount'] ?? 0);
+            }
+
+            session(['discountMessage' => $discountMessage]);
+        } else {
+            session()->forget('discountMessage');
+        }
+
+        $totalAfterDiscount = $subtotal - $discount;
+
+        return view('front.shop.cart', compact(
+            'carts',
+            'subtotal',
+            'discount',
+            'totalAfterDiscount',
+            'discountMessage'
+        ));
+    }
+
     public function checkDiscount($code)
     {
+        $user = auth()->user();
+        if (!$user) {
+            return [
+                'status' => 'error',
+                'message' => 'You must be logged in to use a discount code!',
+                'discount' => 0
+            ];
+        }
+
         $coupon = DiscountCoupon::where('code', $code)->first();
 
         if (!$coupon) {
@@ -108,7 +177,7 @@ class CartController extends Controller
 
         $now = Carbon::now();
 
-        // Kiểm tra ngày bắt đầu
+        // Kiểm tra ngày bắt đầu và hết hạn
         if (!empty($coupon->starts_at) && $now->lt(Carbon::parse($coupon->starts_at))) {
             return [
                 'status' => 'error',
@@ -117,7 +186,6 @@ class CartController extends Controller
             ];
         }
 
-        // Kiểm tra ngày hết hạn
         if (!empty($coupon->expires_at) && $now->gt(Carbon::parse($coupon->expires_at))) {
             return [
                 'status' => 'error',
@@ -126,7 +194,30 @@ class CartController extends Controller
             ];
         }
 
-        // Kiểm tra giá trị tối thiểu
+        // Kiểm tra số lượt dùng
+        $totalUsed = DB::table('coupon_user')->where('coupon_id', $coupon->id)->count();
+        $userUsed = DB::table('coupon_user')
+            ->where('coupon_id', $coupon->id)
+            ->where('user_id', $user->id)
+            ->count();
+
+        if ($coupon->max_uses !== null && $totalUsed >= $coupon->max_uses) {
+            return [
+                'status' => 'error',
+                'message' => 'This coupon has been used up!',
+                'discount' => 0
+            ];
+        }
+
+        if ($coupon->max_uses_user !== null && $userUsed >= $coupon->max_uses_user) {
+            return [
+                'status' => 'error',
+                'message' => 'You have already used this coupon!',
+                'discount' => 0
+            ];
+        }
+
+        // Kiểm tra đơn hàng tối thiểu
         $subtotal = (float) str_replace(',', '', Cart::subtotal());
         if ($coupon->min_amount && $subtotal < $coupon->min_amount) {
             return [
@@ -136,26 +227,19 @@ class CartController extends Controller
             ];
         }
 
-        // Tính giảm giá
+        // Tính toán giảm giá
         if ($coupon->type === 'percent') {
-            $discountAmount = (float) $coupon->discount_amount;
-            $discount = ($subtotal * $discountAmount) / 100;
+            $discount = ($subtotal * (float) $coupon->discount_amount) / 100;
         } else {
             $discount = (float) $coupon->discount_amount;
         }
-
         $discountData = [
             'status' => 'success',
             'message' => 'Discount applied successfully!',
             'discount' => $discount,
             'code' => $coupon->code
         ];
-
-        // LƯU DISCOUNT VÀO SESSION
         session(['discountData' => $discountData]);
-
         return $discountData;
     }
-
-
 }

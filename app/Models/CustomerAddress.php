@@ -16,10 +16,18 @@ class CustomerAddress extends Model
         'email',
         'mobile',
         'country_id',
-        'address',
-        'apartment',
-        'city',
-        'state',
+        'district',
+        'ward',
+        'street',
+        'house_number',
         'zip'
     ];
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
+    }
 }

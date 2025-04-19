@@ -61,7 +61,7 @@
 <script>
     function addToWishList(id){
         $.ajax({
-            url: '/add-to-wishlist/' + id,
+            url: '/wishlist/add-to-wishlist/' + id,
             type: 'POST',
             data: {
                 _token: '{{ csrf_token() }}'

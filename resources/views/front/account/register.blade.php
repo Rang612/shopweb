@@ -26,7 +26,6 @@
                     <p class="invalid-feedback text-danger">{{ $message }}</p>
                     @enderror
                 </div>
-
                 <div class="form-group">
                     <label for="email">Email</label>
                     <input type="email" id="email" name="email" value="{{ old('email') }}" required class="form-control @error('email') is-invalid @enderror">

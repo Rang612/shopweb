@@ -418,7 +418,7 @@ ol {
 }
 
 .inner-header {
-	padding: 39px 0;
+	padding: 3px 0;
 }
 
 .inner-header .logo {
@@ -432,6 +432,8 @@ ol {
 .inner-header .advanced-search {
 	height: 50px;
 	border: 1px solid #ebebeb;
+    margin-left: 30px; /* hoặc 2rem, tuỳ ý */
+
 }
 
 .inner-header .advanced-search .category-btn {
@@ -439,10 +441,10 @@ ol {
 	float: left;
 	background: transparent;
 	border: none;
-	padding-left: 23px;
+	padding-left: 20px;
 	padding-top: 11px;
 	padding-bottom: 13px;
-	padding-right: 60px;
+	padding-right: 75px;
 	font-size: 16px;
 	color: #252525;
 	position: relative;
@@ -462,8 +464,8 @@ ol {
 	position: absolute;
 	right: 11px;
 	top: 10px;
-	content: "3";
-	font-family: "ElegantIcons";
+	/*content: "3";*/
+	/*font-family: "ElegantIcons";*/
 	font-size: 16px;
 	color: #b2b2b2;
 }
@@ -2180,6 +2182,7 @@ ol {
 }
 .heart-icon {
     position: relative;
+
 }
 
 .wishlist-hover {
@@ -3173,7 +3176,7 @@ ol {
 	height: 13px;
 	width: 13px;
 	border: 2px solid #B2B2B2;
-	border-radius: 2px;
+    border-radius: 50%;
 }
 
 .checkout-form .place-order .order-total .payment-check .pc-item label .checkmark:after {
@@ -3183,7 +3186,8 @@ ol {
 	height: 6px;
 	border: solid #ffffff;
 	border-width: 2px 2px 0px 0px;
-	-webkit-transform: rotate(127deg);
+    /* this makes it a circle */
+    -webkit-transform: rotate(127deg);
 	-ms-transform: rotate(127deg);
 	transform: rotate(127deg);
 }
@@ -4752,5 +4756,63 @@ ol {
 
 .wishlist-icon.in-wishlist i {
     color: red; /* đỏ khi đã có trong wishlist */
+}
+.messenger-float {
+    position: fixed;
+    bottom: 100px;
+    right: 20px;
+    z-index: 9999;
+    background: white;
+    border-radius: 50%;
+    padding: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    transition: transform 0.2s;
+}
+
+.messenger-float img {
+    width: 48px;
+    height: 48px;
+}
+
+.messenger-float:hover {
+    transform: scale(1.1);
+}
+.nav-label {
+    font-size: 12px;
+    display: block;
+    margin-top: 2px;
+    color: #555;
+    text-align: center;
+
+}
+.star-rating {
+    direction: ltr;
+    unicode-bidi: bidi-override;
+    display: inline-flex;
+    flex-direction: row-reverse;
+    justify-content: flex-start;
+}
+
+.star-rating input[type="radio"] {
+    display: none;
+}
+
+.star-rating label {
+    font-size: 24px;
+    color: #ccc;
+    padding: 0 2px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.star-rating input:checked ~ label,
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+    color: gold;
+}
+
+.btn-cancel-order {
+    padding: 4px 12px;
+    font-size: 14px;
 }
 

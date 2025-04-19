@@ -10,8 +10,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title') | iDouGh Shop</title>
-
+    <title>@yield('title') | XRAY Shop</title>
+    <link rel="icon" type="image/png" href="{{ asset('front/img/logo-full2.png') }}">
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css?family=Muli:300,400,500,600,700,800,900&display=swap" rel="stylesheet">
 
@@ -76,8 +76,16 @@
                             <li><a href="{{ route('account.profile') }}"> <i class="fas fa-user-alt me-2"></i> My Profile</a></li>
                             <li><a href="{{route('account.orders')}}"><i class="fas fa-shopping-bag me-2"></i> My Orders</a></li>
                             <li><a href="{{route('account.wishlist')}}"><i class="fas fa-heart me-2"></i> Wishlist</a></li>
+                            <li><a href="{{route('account.blogs')}}"><i class="fas fa-blog me-2"></i> My Blogs</a></li>
                             <li><a href="#"><i class="fas fa-lock me-2"></i> Change Password</a></li>
-                            <li><a href="{{ route('account.logout') }}"> <i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                            <li>
+                                <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    <i class="fas fa-sign-out-alt me-2"></i> Logout
+                                </a>
+                                <form id="logout-form" action="{{ route('account.logout') }}" method="POST" style="display: none;">
+                                    @csrf
+                                </form>
+                            </li>
                         @else
                             <li><a href="{{ route('account.login') }}">Login</a></li>
                         @endif
@@ -88,10 +96,10 @@
     </div>
     <div class="container">
         <div class="inner-header">
-            <div class="row">
+            <div class="row d-flex align-items-center">
                 <div class="col-lg-2 col-md-2">
                     <div class="logo">
-{{--                        <img src="front/img/logo.png" height="20" alt="">--}}
+                        <img src="front/img/logo-white.png" height="20" alt="">
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-6">
@@ -108,14 +116,16 @@
                 <div class="col-lg-3 col-md-3 text-right">
                     <ul class="nav-right">
                         <li class="store-icon">
-                            <a href="#">
+                            <a href="{{route('stores.index')}}">
                                 <i class="fas fa-store" style="color: rgba(51,49,49,0.96);"></i> <!-- Icon cửa hàng -->
+                                <div class="nav-label">Store</div>
                             </a>
                         </li>
                         <li class="heart-icon">
                             <a href="{{ route('account.wishlist') }}">
                                 <i class="icon_heart_alt"></i>
                                 <span>{{ count($wishlists) }}</span>
+                                <div class="nav-label">Wishlist</div>
                             </a>
                             <div class="wishlist-hover">
                                 <div class="select-items">
@@ -148,6 +158,8 @@
                             <a href="./cart">
                                 <i class="icon_bag_alt"></i>
                                 <span>{{Cart::count()}}</span>
+                                <div class="nav-label">Cart</div>
+
                             </a>
                             <div class="cart-hover">
                                 <div class="select-items">
@@ -264,11 +276,11 @@
                     <li class="{{ (request()->segment(1) == 'shop') ? 'active' : '' }}">
                         <a href="./shop">Product</a>
                     </li>
-                    <li class="{{ (request()->segment(1) == 'contact') ? 'active' : '' }}">
-                        <a href="./contact">About Us</a>
-                    </li>
                     <li class="{{ (request()->segment(1) == 'blog') ? 'active' : '' }}">
                         <a href="{{route('front.blog.index')}}">Blogs</a>
+                    </li>
+                    <li class="{{ (request()->segment(1) == 'contact') ? 'active' : '' }}">
+                        <a href="./contact">Contact Us</a>
                     </li>
                 </ul>
             </nav>
@@ -372,14 +384,6 @@
                 </div>
             </div>
             <div class="col-lg-4"></div>
-            <div class="newslatter-item">
-                <h5>Join our newsletter now</h5>
-                <p> get email updates about new products</p>
-                <form action="#" class="subscribe-form">
-                    <input type="text" placeholder="Enter your email">
-                    <button type="button">Sign up</button>
-                </form>
-            </div>
         </div>
     </div>
 </footer>
@@ -398,6 +402,7 @@
         </div>
     </div>
 </div>
+
 <!-- Js Plugins -->
 <script src="front/js/jquery-3.3.1.min.js"></script>
 <script src="front/js/bootstrap.min.js"></script>
@@ -411,6 +416,7 @@
 <script src="front/js/owlcarousel2-filter.min.js"></script>
 <script src="front/js/main.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js"></script>
+
 <script>
     $(document).ready(function() {
         $('.summernote').summernote({
@@ -542,6 +548,8 @@
         });
     });
 </script>
-
+<a href="https://m.me/rangrang0612" target="_blank" class="messenger-float" title="Chat with us on Messenger">
+    <img src="https://img.icons8.com/color/48/facebook-messenger--v1.png" alt="Messenger">
+</a>
 </body>
 </html>

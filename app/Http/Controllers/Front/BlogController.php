@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class BlogController extends Controller
@@ -15,7 +16,6 @@ class BlogController extends Controller
     public function index(Request $request)
     {
         $query = Blog::where('is_approved', true);
-
         if ($request->filled('search')) {
             $keyword = $request->search;
             $query->where(function ($q) use ($keyword) {
@@ -28,7 +28,6 @@ class BlogController extends Controller
         $blogs = $query->latest()->paginate(6);
         $categories = Category::pluck('name');
         $recentBlogs = Blog::where('is_approved', true)->latest()->take(5)->get();
-
         return view('front.blog.blogs', compact('blogs', 'categories', 'recentBlogs'));
     }
 
@@ -105,5 +104,19 @@ class BlogController extends Controller
         return back()->with('success', 'Your comment has been submitted.');
     }
 
+    public function destroy($id)
+    {
+        $blog = Blog::where('user_id', Auth::id())->findOrFail($id);
 
+        // Xóa các comment liên quan
+        $blog->blogcomment()->delete();
+
+        // Xóa ảnh nếu có
+        if ($blog->image && Storage::disk('public')->exists('blogs/' . $blog->image)) {
+            Storage::disk('public')->delete('blogs/' . $blog->image);
+        }
+        // Xoá blog
+        $blog->delete();
+        return redirect()->back()->with('success', 'Your blog deleted successfully!');
+    }
 }

@@ -83,15 +83,15 @@
                             <label for="note">Note</label>
                             <input type="text" id="note" name="note">
                         </div>
-                        <div class="col-lg-12">
-                            <div class="create-item">
-                                <label>
-                                    Create an account?
-                                    <input type="checkbox" id="acc-create">
-                                    <span class="checkmark"></span>
-                                </label>
-                            </div>
-                        </div>
+{{--                        <div class="col-lg-12">--}}
+{{--                            <div class="create-item">--}}
+{{--                                <label>--}}
+{{--                                    Create an account?--}}
+{{--                                    <input type="checkbox" id="acc-create">--}}
+{{--                                    <span class="checkmark"></span>--}}
+{{--                                </label>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
                     </div>
                 </div>
                 <div class="col-lg-6">
@@ -114,14 +114,14 @@
                             <div class="payment-check">
                                 <div class="pc-item">
                                     <label for="pc-check">
-                                        Pay later
+                                        Pay later (Cash on Delivery)
                                         <input type="radio" id="pc-check" name="payment_type" value="pay_later">
                                         <span class="checkmark"></span>
                                     </label>
                                 </div>
                                 <div class="pc-item">
-                                    <label class="pc-paypat">
-                                        Pay now
+                                    <label class="pc-paypal">
+                                        Pay now (VNPay)
                                         <input type="radio" id="pc-paypal" name="payment_type" value="online_payment">
                                         <span class="checkmark"></span>
                                     </label>

@@ -4,7 +4,10 @@ use App\Http\Controllers\AuthController;
 use \App\Http\Controllers\Front;
 use App\Http\Controllers\Front\BlogController;
 use App\Http\Controllers\Front\CheckOutController;
+use App\Http\Controllers\Front\ShopController;
+use App\Http\Controllers\Front\StoreController;
 use App\Http\Controllers\FrontController;
+use App\Http\Controllers\VNPayController;
 use App\Models\ProductDetail;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
@@ -36,7 +39,7 @@ Route::prefix('cart')->group(function(){
     Route::get('/destroy', [Front\CartController::class,'destroy']);
     Route::get('/update', [Front\CartController::class,'update']);
     //apply coupon
-    Route::post('/apply-discount', [Front\CartController::class,'applyDicount'])->name('cart.applyDiscount');
+    Route::post('/apply-discount', [Front\CartController::class,'applyDiscount'])->name('cart.applyDiscount');
 });
 
 Route::prefix('checkout')->group(function(){
@@ -53,6 +56,9 @@ Route::prefix('checkout')->group(function(){
     Route::get('/proxy/districts/{districtCode}', function ($districtCode) {
         return Http::get("https://provinces.open-api.vn/api/d/{$districtCode}?depth=2")->body();
     });
+
+    Route::get('/vnpay/{order}', [VNPayController::class, 'createPayment'])->name('vnpay.checkout');
+    Route::get('/vnpay-return', [VNPayController::class, 'vnpayReturn'])->name('vnpay.return');
 });
 
 Route::prefix('wishlist')->group(function(){
@@ -64,6 +70,7 @@ Route::prefix('blog')->group(function () {
     Route::get('/', [BlogController::class, 'index'])->name('front.blog.index');
     Route::get('/{id}', [BlogController::class, 'show'])->name('front.blog.show');
     Route::post('/create', [BlogController::class, 'store'])->middleware('auth')->name('front.blog.store');
+    Route::delete('/my-blogs/{id}', [BlogController::class, 'destroy'])->name('front.blog.destroy');
 });
 
 Route::group(['prefix' => 'account'], function () {
@@ -78,14 +85,21 @@ Route::group(['prefix' => 'account'], function () {
         Route::get('/profile',[AuthController::class,'profile'])->name('account.profile');
         Route::get('/my-orders',[AuthController::class,'orders'])->name('account.orders');
         Route::get('/my-wishlist',[AuthController::class,'wishlist'])->name('account.wishlist');
+        Route::get('/my-blogs',[AuthController::class,'blog'])->name('account.blogs');
         Route::get('/order-detail/{orderId}',[AuthController::class,'orderDetail'])->name('account.orderDetail');
         Route::post('/logout', [AuthController::class, 'logout'])->name('account.logout');
         Route::post('/update-user', [AuthController::class, 'updateProfile'])->name('account.updateProfile');
+        Route::post('/update-address', [AuthController::class, 'updateAddress'])->name('account.updateAddress');
+
+        Route::put('/my-orders/{id}/cancel', [CheckOutController::class, 'cancel'])->name('orders.cancel');
         Route::get('/blogs/create', [\App\Http\Controllers\Front\BlogController::class, 'create'])->name('blogs.create');
         Route::post('/blogs/store', [\App\Http\Controllers\Front\BlogController::class, 'store'])->name('blogs.store');
         Route::post('/blogs/{blog}/comment', [BlogController::class, 'comment'])->name('blogs.comment');
+        Route::post('/product/{id}/comment', [ShopController::class, 'postComment'])->name('product.comment');
+
     });
 });
 Route::get('/contact',[Front\ContactController::class,'contact']);
+Route::get('/stores', [StoreController::class, 'index'])->name('stores.index');
 
 

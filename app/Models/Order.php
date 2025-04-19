@@ -29,7 +29,9 @@ class Order extends Model
         'street',
         'house_number',
         'zip',
-        'notes'
+        'notes',
+        'payment_status',
+        'payment_method_id'
     ];
     public function orderDetail(){
         return $this->hasMany(OrderItem::class,'order_id','id');
@@ -38,5 +40,10 @@ class Order extends Model
     public function city()
     {
         return $this->belongsTo(Country::class, 'country_id', 'id');
+    }
+
+    public function paymentMethod()
+    {
+        return $this->belongsTo(PaymentMethod::class);
     }
 }

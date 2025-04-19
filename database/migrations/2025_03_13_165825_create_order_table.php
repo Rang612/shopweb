@@ -20,7 +20,7 @@ return new class extends Migration
             $table->integer('coupon_code_id')->nullable();
             $table->double('discount', 10, 2)->nullable();
             $table->double('grand_total', 10, 2);
-            $table->enum('payment_status', ['unpaid', 'paid'])->default('unpaid');
+            $table->enum('payment_status', ['unpaid', 'paid','cod','pending'])->default('pending');
             $table->enum('status', ['pending', 'processing', 'completed', 'decline'])->default('pending');
             //User Address realted columns
             $table->string('first_name');

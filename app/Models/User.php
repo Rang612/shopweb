@@ -44,4 +44,16 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function address()
+    {
+        return $this->hasOne(CustomerAddress::class, 'user_id');
+    }
+    public function usedCoupons()
+    {
+        return $this->belongsToMany(DiscountCoupon::class, 'coupon_user', 'user_id', 'coupon_id')
+            ->withTimestamps()
+            ->withPivot('used_at');
+    }
+
 }

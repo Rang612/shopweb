@@ -15,6 +15,11 @@
         </a>
     </li>
     <li class="nav-item">
+        <a href="{{ route('account.blogs') }}" class="nav-link font-weight-bold">
+            <i class="fas fa-blog me-2"></i> My Blogs
+        </a>
+    </li>
+    <li class="nav-item">
         <a href="change-password.php" class="nav-link font-weight-bold">
             <i class="fas fa-lock me-2"></i> Change Password
         </a>

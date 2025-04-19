@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Scout\Searchable;
 
 class Product extends Model
 {
@@ -25,7 +26,23 @@ class Product extends Model
         'qty',
         'status',
     ];
+    use Searchable;
 
+    public function searchableAs(): string
+    {
+        return 'products';
+    }
+
+    public function toSearchableArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'slug' => $this->slug,
+            'description' => $this->description,
+            'price' => $this->price,
+        ];
+    }
     public function brand(){
         return $this->belongsTo(Brand::class,'brand_id','id');
     }
