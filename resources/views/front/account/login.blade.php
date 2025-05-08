@@ -39,7 +39,7 @@
                     </div>
 
                     <div class="form-group small">
-                        <a href="#" class="forgot-link">Forgot Password?</a>
+                        <a href="{{route('account.forgotPassword')}}" class="forgot-link">Forgot Password?</a>
                     </div>
 
                     <button type="submit" class="btn">Login</button>

@@ -129,7 +129,7 @@
                 @foreach($featuredStores as $store)
                     <div class="col-md-4">
                         <div class="card mb-3">
-                            <img src="{{ asset('storage/stores/' . ($store->image ?? 'default.jpg')) }}" class="card-img-top" alt="{{ $store->name }}">
+                            <img src="{{ asset('storage/stores/' . $store->image) }}" alt="{{ $store->name }}" class="img-fluid">
                             <div class="card-body">
                                 <h5><strong>{{ $store->name }}</strong></h5>
                                 <p></p>

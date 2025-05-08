@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Blog;
 use App\Models\Category;
 use App\Models\Tag;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -60,6 +61,25 @@ class BlogController extends Controller
             $fileName = time() . '_' . $image->getClientOriginalName(); // để tránh trùng tên
             $image->storeAs('blogs', $fileName, 'public'); // vẫn lưu vào thư mục blogs
             $blog->image = $fileName; // chỉ lưu tên file vào DB
+            $sourcePath = $image->getPathname();
+
+            // ✅ Upload lên Imgur
+            $client = new Client();
+            $response = $client->request('POST', 'https://api.imgur.com/3/image', [
+                'headers' => [
+                    'Authorization' => 'Client-ID ' . env('IMGUR_CLIENT_ID'),
+                ],
+                'form_params' => [
+                    'image' => base64_encode(file_get_contents($sourcePath)),
+                ],
+            ]);
+
+            $imgur = json_decode($response->getBody()->getContents(), true);
+
+            if ($imgur['success']) {
+                $blog->image_url = $imgur['data']['link'];
+                $blog->image_deletehash = $imgur['data']['deletehash'];
+            }
         }
         $blog->save();
         return redirect()->route('front.blog.index')->with('success', 'Your post has been submitted and is pending admin approval.');
@@ -117,6 +137,15 @@ class BlogController extends Controller
         }
         // Xoá blog
         $blog->delete();
+
+        if ($blog->image_deletehash) {
+            $client = new Client();
+            $client->request('DELETE', 'https://api.imgur.com/3/image/' . $blog->image_deletehash, [
+                'headers' => [
+                    'Authorization' => 'Client-ID ' . env('IMGUR_CLIENT_ID'),
+                ],
+            ]);
+        }
         return redirect()->back()->with('success', 'Your blog deleted successfully!');
     }
 }

@@ -7,6 +7,7 @@ use App\Http\Controllers\Front\CheckOutController;
 use App\Http\Controllers\Front\ShopController;
 use App\Http\Controllers\Front\StoreController;
 use App\Http\Controllers\FrontController;
+use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\VNPayController;
 use App\Models\ProductDetail;
 use Illuminate\Support\Facades\Http;
@@ -79,6 +80,10 @@ Route::group(['prefix' => 'account'], function () {
         Route::post('/login',[AuthController::class,'authenticate'])->name('account.authenticate');
         Route::get('/register',[AuthController::class,'register'])->name('account.register');
         Route::post('/process-register',[AuthController::class,'processRegister'])->name('account.processRegister');
+        Route::get('/forgot-password',[AuthController::class,'forgotPassword'])->name('account.forgotPassword');
+        Route::post('/forgot-password',[AuthController::class,'processForgotPassword'])->name('account.processForgotPassword');
+        Route::get('/reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+        Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
     });
 
     Route::group(['middleware' => 'auth'], function () {
@@ -87,6 +92,8 @@ Route::group(['prefix' => 'account'], function () {
         Route::get('/my-wishlist',[AuthController::class,'wishlist'])->name('account.wishlist');
         Route::get('/my-blogs',[AuthController::class,'blog'])->name('account.blogs');
         Route::get('/order-detail/{orderId}',[AuthController::class,'orderDetail'])->name('account.orderDetail');
+        Route::get('/account/change-password', [AuthController::class, 'showForm'])->name('password.form');
+        Route::post('/account/change-password', [AuthController::class, 'change'])->name('password.change');
         Route::post('/logout', [AuthController::class, 'logout'])->name('account.logout');
         Route::post('/update-user', [AuthController::class, 'updateProfile'])->name('account.updateProfile');
         Route::post('/update-address', [AuthController::class, 'updateAddress'])->name('account.updateAddress');
@@ -99,7 +106,7 @@ Route::group(['prefix' => 'account'], function () {
 
     });
 });
-Route::get('/contact',[Front\ContactController::class,'contact']);
+Route::get('/contact',[Front\PageController::class,'contact']);
 Route::get('/stores', [StoreController::class, 'index'])->name('stores.index');
-
-
+Route::get('/page/{slug}', [Front\PageController::class, 'page'])->name('page.show');
+Route::post('/contact/send', [Front\PageController::class, 'sendContactUsEmail'])->name('contact.send');

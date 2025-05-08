@@ -16,16 +16,14 @@ class Kernel extends ConsoleKernel
     {
         $schedule->call(function () {
             $expiredOrders = Order::where('payment_status', 'pending')
-                ->where('order_status', 'pending')
+                ->where('status', 'pending')
                 ->where('created_at', '<=', now()->subHours(24))
                 ->get();
-
             foreach ($expiredOrders as $order) {
                 $order->update([
+                    'status'         => 'decline',
                     'payment_status' => 'unpaid',
-                    'order_status'   => 'cancelled',
                 ]);
-
                 Log::info("Đã huỷ đơn hàng #{$order->id} vì quá hạn thanh toán.");
             }
         })->hourly();

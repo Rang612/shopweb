@@ -31,7 +31,8 @@ class Order extends Model
         'zip',
         'notes',
         'payment_status',
-        'payment_method_id'
+        'payment_method_id',
+        'status'
     ];
     public function orderDetail(){
         return $this->hasMany(OrderItem::class,'order_id','id');

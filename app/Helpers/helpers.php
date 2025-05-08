@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Category;
+use App\Models\Page;
 use App\Models\Product;
 use App\Models\SubCategory;
 
@@ -16,4 +17,11 @@ function getProductImage($productId)
 {
     return \App\Models\ProductImage::where('product_id', $productId)->first();
 }
+
+function staticPages(){
+    $page = Page::orderBy('name', 'ASC')
+        ->get();
+    return $page;
+}
+
 ?>

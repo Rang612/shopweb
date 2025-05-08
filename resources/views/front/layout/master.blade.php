@@ -77,7 +77,7 @@
                             <li><a href="{{route('account.orders')}}"><i class="fas fa-shopping-bag me-2"></i> My Orders</a></li>
                             <li><a href="{{route('account.wishlist')}}"><i class="fas fa-heart me-2"></i> Wishlist</a></li>
                             <li><a href="{{route('account.blogs')}}"><i class="fas fa-blog me-2"></i> My Blogs</a></li>
-                            <li><a href="#"><i class="fas fa-lock me-2"></i> Change Password</a></li>
+                            <li><a href="{{route('password.form')}}"><i class="fas fa-lock me-2"></i> Change Password</a></li>
                             <li>
                                 <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                     <i class="fas fa-sign-out-alt me-2"></i> Logout
@@ -203,35 +203,6 @@
             </div>
         </div>
     </div>
-{{--    <div class="nav-item">--}}
-{{--        <div class="container">--}}
-{{--            @if(getCategories()->isNotEmpty())--}}
-{{--                @foreach(getCategories() as $category)--}}
-{{--            <div class="nav-depart">--}}
-{{--                <div class="depart-btn">--}}
-{{--                    <i class="ti-menu"></i>--}}
-{{--                    <span>Category</span>--}}
-{{--                    <ul class="depart-hover">--}}
-{{--                        <li class="active"><a href="#">Nữ</a></li>--}}
-{{--                    </ul>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-{{--                @endforeach--}}
-{{--            @endif--}}
-{{--            <nav class="nav-menu mobile-menu">--}}
-{{--                <ul>--}}
-{{--                    <li class="{{(request()->segment(1) == '') ? 'active' : ''}}"><a href="./">Trang chủ</a></li>--}}
-{{--                    <li class="{{(request()->segment(1) == 'shop') ? 'active' : ''}}"><a href="./shop">Sản phẩm</a></li>--}}
-{{--                    <li class="{{(request()->segment(1) == 'blog') ? 'active' : ''}}"><a href=./">Bài viết</a></li>--}}
-{{--                    <li class="{{(request()->segment(1) == 'contact') ? 'active' : ''}}"><a href="./contact">Liên hệ</a></li>--}}
-
-{{--                </ul>--}}
-{{--            </nav>--}}
-
-{{--            <div id="mobile-menu-wrap"></div>--}}
-
-{{--        </div>--}}
-{{--    </div>--}}
     <div class="nav-item">
         <div class="container">
             <!-- Trang chủ luôn ở đầu -->
@@ -243,6 +214,23 @@
 {{--                </ul>--}}
 {{--            </nav>--}}
 
+            <style>
+                .nav-item .nav-menu li a {
+                    padding: 16px 45px 15px;
+                    border-right: 0 !important;
+                }
+                .nav-item .container .nav-depart .depart-btn{
+                    background-color: #212529 !important;
+                    color: #f5f5f5 !important;
+                    transition: background-color 0.5s ease; /* Cho mượt */
+
+                }
+                .nav-item .container .nav-depart .depart-btn:hover {
+                    background-color: #e7ab3c !important;
+                    color: #f5f5f5 !important; /* Vẫn giữ màu chữ */
+
+                }
+            </style>
             <div class="nav-depart">
                 <div class="nav-menu mobile-menu">
                     <ul>
@@ -253,10 +241,10 @@
                 </div>
             </div>
             <!-- Hiển thị Category nếu có -->
-            @if(getCategories()->isNotEmpty())
+        @if(getCategories()->isNotEmpty())
                 @foreach(getCategories() as $category)
                 <div class="nav-depart">
-                    <div class="depart-btn">
+                    <div class="depart-btn category-item">
                         <span>{{ $category->name }}</span>
                         @if($category->sub_category->isNotEmpty())
                             <ul class="depart-hover">
@@ -269,7 +257,6 @@
                 </div>
                 @endforeach
             @endif
-
             <!-- Các menu còn lại -->
             <nav class="nav-menu mobile-menu">
                 <ul>
@@ -279,12 +266,8 @@
                     <li class="{{ (request()->segment(1) == 'blog') ? 'active' : '' }}">
                         <a href="{{route('front.blog.index')}}">Blogs</a>
                     </li>
-                    <li class="{{ (request()->segment(1) == 'contact') ? 'active' : '' }}">
-                        <a href="./contact">Contact Us</a>
-                    </li>
                 </ul>
             </nav>
-
             <div id="mobile-menu-wrap"></div>
         </div>
     </div>
@@ -363,23 +346,24 @@
             </div>
             <div class="col-lg-2 offset-lg-1">
                 <div class="footer-wiget">
-                    <h5>Information</h5>
+                    <h5 style="color: #e7ab3c;">Information</h5>
                     <ul>
-                        <li><a href="">About us</a></li>
-                        <li><a href="">Checkout</a></li>
-                        <li><a href="">Contact</a></li>
-                        <li><a href="">Serivius</a></li>
+                        @if(staticPages()->isNotEmpty())
+                            @foreach(staticPages() as $page)
+                                <li><a href="{{ route('page.show', $page->slug) }}" title="{{$page->name}}">{{ $page->name }}</a></li>
+                            @endforeach
+                        @endif
                     </ul>
                 </div>
             </div>
             <div class="col-lg-2">
                 <div class="footer-wiget">
-                    <h5>My account</h5>
+                    <h5 style="color: #e7ab3c;">My account</h5>
                     <ul>
-                        <li><a href="">My account</a></li>
-                        <li><a href="">Contact</a></li>
-                        <li><a href="">Shopping cart</a></li>
-                        <li><a href="">Shop</a></li>
+                        <li><a href="{{route('account.profile')}}">My Profile</a></li>
+                        <li><a href="{{route('account.orders')}}">My Orders</a></li>
+                        <li><a href="{{route('account.wishlist')}}">Wishlist</a></li>
+                        <li><a href="{{ route('account.blogs') }}">My Blogs</a></li>
                     </ul>
                 </div>
             </div>

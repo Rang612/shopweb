@@ -13,6 +13,7 @@ use App\Models\Wishlist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
@@ -188,4 +189,52 @@ class AuthController extends Controller
         $data['blogs'] = $blogs;
         return view('front.account.blog', $data);
     }
+
+    public function showForm()
+    {
+        return view('front.account.change-password');
+    }
+
+    public function change(Request $request)
+    {
+        $request->validate([
+            'old_password' => 'required',
+            'new_password' => 'required|min:8',
+            'confirm_password' => 'required|same:new_password',
+        ]);
+
+        $user = Auth::user();
+
+        if (!Hash::check($request->old_password, $user->password)) {
+            return back()->withErrors(['old_password' => 'Old password is incorrect']);
+        }
+
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        return back()->with('success', 'Password changed successfully!');
+    }
+
+    public function forgotPassword()
+    {
+        return view('front.account.forgot-password');
+    }
+    public function processForgotPassword(Request $request)
+    {
+        // Validate email đầu vào
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        // Gửi link reset password
+        $status = Password::sendResetLink(
+            $request->only('email')
+        );
+
+        // Kiểm tra kết quả và trả về thông báo
+        return $status === Password::RESET_LINK_SENT
+            ? back()->with('status', __($status))
+            : back()->withErrors(['email' => __($status)]);
+    }
+
 }

@@ -20,7 +20,7 @@
         </a>
     </li>
     <li class="nav-item">
-        <a href="change-password.php" class="nav-link font-weight-bold">
+        <a href="{{route('password.form')}}" class="nav-link font-weight-bold">
             <i class="fas fa-lock me-2"></i> Change Password
         </a>
     </li>
