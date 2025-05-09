@@ -82,7 +82,7 @@
                         @endif
                         <div class="inner-text">
                             <h4> {{$category->name}}</h4>
-                        </div>
+                        </div>?
                     </div>
                 </div>
                     @endforeach
