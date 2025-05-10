@@ -71,18 +71,24 @@
                 @if(getCategories()->isNotEmpty())
                     @foreach(getCategories() as $category)
                 <div class="col-lg-4">
+{{--                    <div class="single-banner">--}}
+{{--                            <img src="{{asset('storage/'.$category->image)}}" alt="">--}}
+{{--                        @if(!empty($category->imgur_link))--}}
+{{--                            @php--}}
+{{--                                $imageData = base64_encode(file_get_contents($category->imgur_link));--}}
+{{--                                $src = 'data:image/jpeg;base64,' . $imageData;--}}
+{{--                            @endphp--}}
+{{--                            <img src="{{ $src }}" alt="Category Image">--}}
+{{--                        @endif--}}
+{{--                        <div class="inner-text">--}}
+{{--                            <h4> {{$category->name}}</h4>--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
                     <div class="single-banner">
-                            <img src="{{asset('storage/'.$category->image)}}" alt="">
-                        @if(!empty($category->imgur_link))
-                            @php
-                                $imageData = base64_encode(file_get_contents($category->imgur_link));
-                                $src = 'data:image/jpeg;base64,' . $imageData;
-                            @endphp
-                            <img src="{{ $src }}" alt="Category Image">
-                        @endif
+                        <img src="{{ asset('uploads/category/' . $category->image) }}" alt="{{ $category->name }}">
                         <div class="inner-text">
-                            <h4> {{$category->name}}</h4>
-                        </div>?
+                            <h4>{{ $category->name }}</h4>
+                        </div>
                     </div>
                 </div>
                     @endforeach
