@@ -58,69 +58,6 @@ class CartController extends Controller
             Cart::update($request->rowId, $request->qty);
         }
     }
-//    public function checkDiscount($code)
-//    {
-//        $coupon = DiscountCoupon::where('code', $code)->first();
-//
-//        if (!$coupon) {
-//            return [
-//                'status' => 'error',
-//                'message' => 'Invalid discount coupon!',
-//                'discount' => 0
-//            ];
-//        }
-//
-//        $now = Carbon::now();
-//
-//        // Kiểm tra ngày bắt đầu
-//        if (!empty($coupon->starts_at) && $now->lt(Carbon::parse($coupon->starts_at))) {
-//            return [
-//                'status' => 'error',
-//                'message' => 'Discount coupon is not started yet!',
-//                'discount' => 0
-//            ];
-//        }
-//
-//        // Kiểm tra ngày hết hạn
-//        if (!empty($coupon->expires_at) && $now->gt(Carbon::parse($coupon->expires_at))) {
-//            return [
-//                'status' => 'error',
-//                'message' => 'Discount coupon has expired!',
-//                'discount' => 0
-//            ];
-//        }
-//
-//        // Kiểm tra giá trị tối thiểu
-//        $subtotal = (float) str_replace(',', '', Cart::subtotal());
-//        if ($coupon->min_amount && $subtotal < $coupon->min_amount) {
-//            return [
-//                'status' => 'error',
-//                'message' => 'You need to spend at least ' . number_format($coupon->min_amount, 0, ',', '.') . ' VND to use this coupon!',
-//                'discount' => 0
-//            ];
-//        }
-//
-//        // Tính giảm giá
-//        if ($coupon->type === 'percent') {
-//            $discountAmount = (float) $coupon->discount_amount;
-//            $discount = ($subtotal * $discountAmount) / 100;
-//        } else {
-//            $discount = (float) $coupon->discount_amount;
-//        }
-//
-//        $discountData = [
-//            'status' => 'success',
-//            'message' => 'Discount applied successfully!',
-//            'discount' => $discount,
-//            'code' => $coupon->code
-//        ];
-//
-//        // LƯU DISCOUNT VÀO SESSION
-//        session(['discountData' => $discountData]);
-//
-//        return $discountData;
-//    }
-
     public function index(Request $request)
     {
         $carts = Cart::content();

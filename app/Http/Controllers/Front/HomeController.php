@@ -14,56 +14,6 @@ use Illuminate\Support\Facades\Storage;
 
 class HomeController extends Controller
 {
-    //
-//    public function index()
-//    {
-//        $products = Product::where('is_featured', 'Yes')
-//                            ->with('productImages','tags')
-//                            ->where('status',1)
-//                            ->get();
-////        dd($products);
-//        $data['products'] = $products;
-//        $menProducts = Product::where('is_featured', 'Yes')
-//                                ->where('category_id', 1)
-//                                ->get();
-//        $womenProducts = Product::where('is_featured', 'Yes')
-//                                    ->where('category_id', 2)
-//                                    ->get();
-//
-//        // Hiển thị sản phẩm nổi bật của woman
-//        $womenCategory = Category::where('slug', 'woman-product')->with('sub_category')->first();
-//        // Kiểm tra nếu có danh mục Women
-//        $womenSubCategories = $womenCategory ? $womenCategory->sub_category : collect();
-//        $womenProductsBySubcategory = [];
-//        foreach ($womenSubCategories as $subCategory) {
-//            $womenProductsBySubcategory[$subCategory->slug] = Product::where('sub_category_id', $subCategory->id)
-//                ->where('is_featured', 'Yes')
-//                ->where('status', 1)
-//                ->get();
-//        }
-//
-//        // Hiển thị sản phẩm nổi bật của men
-//        $menCategory = Category::where('slug', 'men-product')
-//                            ->with('sub_category')
-//                            ->first();
-//        // Kiểm tra nếu có danh mục Women
-//        $menSubCategories = $menCategory ? $menCategory->sub_category : collect();
-//        $menProductsBySubcategory = [];
-//        foreach ($menSubCategories as $subCategoryMen) {
-//            $menProductsBySubcategory[$subCategoryMen->slug] = Product::where('sub_category_id', $subCategoryMen->id)
-//                ->where('is_featured', 'Yes')
-//                ->where('status', 1)
-//                ->get();
-//        }
-//        $data['womenProductsBySubcategory'] = $womenProductsBySubcategory;
-//        $data['womenSubCategories'] = $womenSubCategories;
-//        $data['menProducts'] = $menProducts;
-//        $data['menProductsBySubcategory'] = $menProductsBySubcategory;
-//        $data['menSubCategories'] = $menSubCategories;
-//        $data['womenProducts'] = $womenProducts;
-////        $blogs = Blog::orderBy('id', 'desc')->limit(3)->get();
-//        return view('front.index', $data);
-//    }
     public function index()
     {
         $products = Product::where('is_featured', 'Yes')

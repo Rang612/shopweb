@@ -220,6 +220,14 @@
             transform: translateX(-50%);
             border-radius: 2px;
         }
+        .copied-tooltip {
+            animation: fadeOut 1s ease-in-out forwards;
+        }
+
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
+        }
     </style>
     <section class="voucher-section spad " >
         <div class="container">
@@ -236,11 +244,16 @@
                                 <small>EXD: {{ \Carbon\Carbon::parse($voucher->expires_at)->format('d-m-Y') }}</small>
                             </div>
                             <div class="text-end">
-                                <button class="btn btn-warning btn-sm mb-2 take-code-btn"
+                                <button class="btn btn-warning btn-sm mb-2 take-code-btn position-relative"
                                         data-code="{{ $voucher->code }}"
                                         style="font-size: 12px">
                                     Take Code
+                                    <span class="copied-tooltip position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success"
+                                          style="display: none; font-size: 10px; z-index: 1;">
+                                        Copied!
+                                    </span>
                                 </button>
+
                             </div>
                         </div>
                     </div>
@@ -271,12 +284,19 @@
         $(document).ready(function(){
             $('.take-code-btn').click(function(){
                 const code = $(this).data('code');
-                navigator.clipboard.writeText(code).catch(err => {
-                    console.error('Failed to copy code', err);
-                });
+                // Tạo input tạm để copy
+                const $tempInput = $("<input>");
+                $("body").append($tempInput);
+                $tempInput.val(code).select();
+                const success = document.execCommand("copy");
+                $tempInput.remove();
+                // Hiện hiệu ứng tooltip "Copied!"
+                if (success) {
+                    const $tooltip = $(this).find('.copied-tooltip');
+                    $tooltip.stop(true, true).fadeIn(100).delay(1000).fadeOut(500);
+                }
             });
         });
-
     </script>
     <!--Voucher section end-->
     <!--Man Banner begin-->
