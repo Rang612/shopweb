@@ -29,7 +29,7 @@
         </div>
     </div>
     <div class="blog-create-container">
-        <h2>📝 Create a New Blog Post</h2>
+        <h2>Create a New Blog Post</h2>
         <form action="{{ route('blogs.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="form-group mb-3">

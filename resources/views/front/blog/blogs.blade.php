@@ -58,7 +58,7 @@
                                 @foreach($recentBlogs as $rblog)
                                 <a href="{{route('front.blog.show', $rblog->id)}}" class="rb-item">
                                     <div class="rb-pic">
-                                        <img src="{{ asset('storage/blogs/' . $rblog->image) }}" alt="Recent Post">
+                                        <img src="{{ asset('uploads/blogs/' . $rblog->image) }}" alt="Recent Post">
                                     </div>
                                     <div class="rb-text">
                                         <h6>{{$rblog->title}}</h6>
@@ -84,7 +84,7 @@
                             <div class="blog-item">
                                 <a href="{{route('front.blog.show', $blog->id)}}">
                                 <div class="bi-pic">
-                                    <img src="{{ asset('storage/blogs/' . $blog->image) }}" alt="Blog Image" style="height: 200px; width: 100%; object-fit: cover; border-radius: 5px;">
+                                    <img src="{{ asset('uploads/blogs/' . $blog->image) }}" alt="Blog Image" style="height: 200px; width: 100%; object-fit: cover; border-radius: 5px;">
                                 </div>
                                 <div class="bi-text">
                                     <h4>{{ $blog->title }}</h4>

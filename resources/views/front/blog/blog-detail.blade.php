@@ -26,7 +26,7 @@
                     </div>
 
                     <div class="blog-large-pic mb-4">
-                        <img src="{{ asset('storage/blogs/' . $blog->image) }}" alt="{{ $blog->title }}">
+                        <img src="{{ asset('uploads/blogs/' . $blog->image) }}" alt="{{ $blog->title }}">
                     </div>
 
                     <div class="blog-detail-desc mb-4">
@@ -80,7 +80,7 @@
                             @forelse($relatedBlogs as $related)
                                 <div class="col-sm-4 mb-4">
                                     <a href="{{ route('front.blog.show', $related->id) }}">
-                                        <img src="{{ asset('storage/blogs/' . $related->image) }}" alt="{{ $related->title }}" style="width: 100%; height: auto;">
+                                        <img src="{{ asset('uploads/blogs/' . $related->image) }}" alt="{{ $related->title }}">
                                         <p class="mt-2 fw-bold">{{ Str::limit($related->title, 50) }}</p>
                                     </a>
                                 </div>
