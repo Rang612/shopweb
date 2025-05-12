@@ -135,7 +135,7 @@
                                             <tr>
                                                 <td class="si-pic">
                                                     <img style="height: 70px"
-                                                         src="{{ $wishlist->product->productImages->first() ? asset('storage/products/' . $wishlist->product->productImages->first()->image) : asset('front/img/default.jpg') }}"
+                                                         src="{{ $wishlist->product->productImages->first() ? asset('uploads/products/small/' . $wishlist->product->productImages->first()->image) : asset('front/img/default.jpg') }}"
                                                          alt="{{ $wishlist->product->title }}">
                                                 </td>
                                                 <td class="si-text">
@@ -206,14 +206,6 @@
     <div class="nav-item">
         <div class="container">
             <!-- Trang chủ luôn ở đầu -->
-{{--            <nav class="nav-menu mobile-menu">--}}
-{{--                <ul>--}}
-{{--                    <li class="{{ (request()->segment(1) == '') ? 'active' : '' }}">--}}
-{{--                        <a href="./">Trang chủ</a>--}}
-{{--                    </li>--}}
-{{--                </ul>--}}
-{{--            </nav>--}}
-
             <style>
                 .nav-item .nav-menu li a {
                     padding: 16px 45px 15px;
@@ -249,7 +241,7 @@
                         @if($category->sub_category->isNotEmpty())
                             <ul class="depart-hover">
                             @foreach($category->sub_category as $subCategory)
-                                    <li class="active"><a href="#">{{ $subCategory->name }}</a></li>
+                                    <li class="active"><a href="shop/subcategory/{{$subCategory->slug}}">{{ $subCategory->name }}</a></li>
                             @endforeach
                             </ul>
                         @endif
@@ -275,64 +267,23 @@
 </header>
 <!--Header section end-->
 
-{{--Body here--}}
+<!--Body Section begin-->
 @yield('body')
+<!--Body Section end-->
 
-<!--Partner Logo section Begin-->
-{{--<div class="partner-logo">--}}
-{{--    <div class="container">--}}
-{{--        <div class="logo-carousel owl-carousel">--}}
-{{--            <div class="logo-item">--}}
-{{--                <div class="tablecell-inner">--}}
-{{--                    <img src="front/img/logo-carousel/logo-1.png">--}}
-
-{{--                </div>--}}
-{{--            </div>--}}
-
-{{--            <div class="logo-item">--}}
-{{--                <div class="tablecell-inner">--}}
-{{--                    <img src="front/img/logo-carousel/logo-2.png">--}}
-
-{{--                </div>--}}
-{{--            </div>--}}
-
-{{--            <div class="logo-item">--}}
-{{--                <div class="tablecell-inner">--}}
-{{--                    <img src="front/img/logo-carousel/logo-3.png">--}}
-
-{{--                </div>--}}
-{{--            </div>--}}
-
-{{--            <div class="logo-item">--}}
-{{--                <div class="tablecell-inner">--}}
-{{--                    <img src="front/img/logo-carousel/logo-4.png">--}}
-
-{{--                </div>--}}
-{{--            </div>--}}
-{{--            <div class="logo-item">--}}
-{{--                <div class="tablecell-inner">--}}
-{{--                    <img src="front/img/logo-carousel/logo-5.png">--}}
-
-{{--                </div>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--    </div>--}}
-{{--</div>--}}
-
-<!-- Partner Logo section end-->
 <!--Footer Section begin-->
 <footer class="footer-section">
     <div class="container">
         <div class="row">
             <div class="col-lg-3">
                 <div class="footer-left">
-                    <div class="footet-logo">
+                    <div class="footer-logo">
                         <a href="index.html">
-{{--                            <img src="front/img/footer-logo.png" height="25" alt="">--}}
+                            <img src="front/img/logo-white2.png" height="10" alt="">
                         </a>
                     </div>
                     <ul>
-                        <li>So 1 Dai Co Viet</li>
+                        <li>1 Dai Co Viet, Hai Ba Trung, Ha Noi</li>
                         <li>Phone:+84 976122003</li>
                         <li>Email:tranhuonggiang612203@gmail.com</li>
                     </ul>
@@ -372,6 +323,7 @@
     </div>
 </footer>
 <!--Footer section end-->
+
 <!-- Wishlist Modal -->
 <div class="modal fade" id="wishlistModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -386,6 +338,7 @@
         </div>
     </div>
 </div>
+<!-- Wishlist Modal end -->
 
 <!-- Js Plugins -->
 <script src="front/js/jquery-3.3.1.min.js"></script>
@@ -400,7 +353,6 @@
 <script src="front/js/owlcarousel2-filter.min.js"></script>
 <script src="front/js/main.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js"></script>
-
 <script>
     $(document).ready(function() {
         $('.summernote').summernote({
@@ -467,10 +419,9 @@
         });
     });
 </script>
-
 <script>
     $(document).ready(function() {
-        $(".product-list").each(function() {
+        $(".product-list-women").each(function() {
             $(this).owlCarousel({
                 loop: false, // Không lặp vô hạn, có thể chỉnh thành true nếu muốn
                 margin: 10, // Khoảng cách giữa các item
@@ -490,8 +441,8 @@
             });
         });
 
-        $(".product-list").hide(); // Ẩn tất cả khi trang load
-        $(".product-list").first().show(); // Chỉ hiển thị danh mục đầu tiên
+        $(".product-list-women").hide(); // Ẩn tất cả khi trang load
+        $(".product-list-women").first().show(); // Chỉ hiển thị danh mục đầu tiên
 
         $(".filter-control .item").click(function() {
             var selectedTag = $(this).data("tag");
@@ -499,9 +450,49 @@
             $(".filter-control .item").removeClass("active");
             $(this).addClass("active");
 
-            $(".product-list").hide(); // Ẩn tất cả danh mục sản phẩm
+            $(".product-list-women").hide(); // Ẩn tất cả danh mục sản phẩm
             if (selectedTag === "all") {
-                $(".product-list").first().fadeIn();
+                $(".product-list-women").first().fadeIn();
+            } else {
+                $("." + selectedTag).fadeIn();
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        $(".product-list-men").each(function() {
+            $(this).owlCarousel({
+                loop: false, // Không lặp vô hạn, có thể chỉnh thành true nếu muốn
+                margin: 10, // Khoảng cách giữa các item
+                nav: true, // Hiển thị nút điều hướng
+                dots: false, // Ẩn dấu chấm bên dưới
+                responsive: {
+                    0: {
+                        items: 1 // Mobile: 1 sản phẩm trên hàng
+                    },
+                    600: {
+                        items: 2 // Tablet: 2 sản phẩm trên hàng
+                    },
+                    1000: {
+                        items: 4 // Desktop: 4 sản phẩm trên hàng
+                    }
+                }
+            });
+        });
+
+        $(".product-list-men").hide(); // Ẩn tất cả khi trang load
+        $(".product-list-men").first().show(); // Chỉ hiển thị danh mục đầu tiên
+
+        $(".filter-control .item").click(function() {
+            var selectedTag = $(this).data("tag");
+
+            $(".filter-control .item").removeClass("active");
+            $(this).addClass("active");
+
+            $(".product-list-men").hide(); // Ẩn tất cả danh mục sản phẩm
+            if (selectedTag === "all") {
+                $(".product-list-men").first().fadeIn();
             } else {
                 $("." + selectedTag).fadeIn();
             }

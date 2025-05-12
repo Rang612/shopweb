@@ -1,7 +1,7 @@
 <div class="product-item item {{ $product->tags->isNotEmpty() ? $product->tags->first()->name : '' }}">
     <div class="pi-pic">
             <div class="product-item">
-                <img src="{{ asset('storage/products/' . $product->productImages->first()->image) }}" alt="Product Image">
+                <img src="{{ asset('uploads/products/large/' . $product->productImages->first()->image) }}" alt="Product Image">
             </div>
         @if($product->compare_price != null)
             <div class="sale">Sale</div>
@@ -38,8 +38,8 @@
                     <button type="submit" class="add-to-cart-btn" >
                         <i class="icon_bag_alt"></i> Add To Cart
                     </button>
-                    <a href="shop/product/{{$product->id}}">Quick view</a>
                 </form>
+                <a href="shop/product/{{$product->id}}">Quick view</a>
             </li>
         </ul>
     </div>

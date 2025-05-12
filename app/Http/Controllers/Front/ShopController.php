@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\Storage;
 
 class ShopController extends Controller
 {
-    //
     public function show($id){
         //get categories, brand
         $categories = Category::all();
@@ -35,14 +34,11 @@ class ShopController extends Controller
             })
             ->limit(4)
             ->get();
-
-
         $wishlistIds = Auth::check()
             ? Wishlist::where('user_id', Auth::id())->pluck('product_id')->toArray()
             : [];
         return view('front.shop.show', compact('product', 'categories','brands', 'avgRating', 'relatedProducts','tags','wishlistIds'));
     }
-
     public function postComment(Request $request)
     {
         $user = Auth::user();
@@ -62,8 +58,6 @@ class ShopController extends Controller
         return redirect()->back()->with('success', 'Your comment has been posted!');
     }
 
-
-
     public function index(Request $request)
     {
         //get categories, brand
@@ -81,59 +75,11 @@ class ShopController extends Controller
         $products = $this->filter($products, $request);
 
         $products = $this->sortAndPagination($products, $sortBy, $perPage);
-        foreach ($products as $product) {
-            if ($product->productImages->isNotEmpty()) {
-                $firstImage = $product->productImages->first(); // Lấy ảnh đầu tiên
-
-                // Lấy tên ảnh từ cột `image`
-                $imageName = $firstImage->image;
-
-                // Kiểm tra xem có tên ảnh không
-                if ($imageName) {
-                    // Tải và lưu ảnh với đúng tên
-                    $imagePath = $this->downloadAndSaveImage($firstImage->imgur_link, $imageName);
-
-                    // Gán đường dẫn ảnh để hiển thị trong view
-                    $product->saved_image = $imagePath;
-                } else {
-                    $product->saved_image = 'front/img/default-product.jpg';
-                }
-            } else {
-                $product->saved_image = 'front/img/default-product.jpg';
-            }
-        }
         $wishlistIds = Auth::check()
             ? Wishlist::where('user_id', Auth::id())->pluck('product_id')->toArray()
             : [];
 
        return view('front.shop.index', compact('products', 'brands','categories','tags','wishlistIds'));
-    }
-
-    private function downloadAndSaveImage($imageUrl, $imageName)
-    {
-        // Kiểm tra xem có link ảnh không
-        if (!$imageUrl || !$imageName) {
-            return null;
-        }
-
-        // Định dạng lại tên file và đường dẫn
-        $path = "public/products/{$imageName}";
-
-        // Kiểm tra nếu ảnh đã tồn tại
-        if (Storage::exists($path)) {
-            return "storage/products/{$imageName}"; // Trả về đường dẫn cũ nếu đã có ảnh
-        }
-
-        // Tải ảnh từ imgur
-        $imageContents = @file_get_contents($imageUrl);
-        if (!$imageContents) {
-            return null; // Nếu tải thất bại, trả về null
-        }
-
-        // Lưu ảnh vào storage
-        Storage::put($path, $imageContents);
-
-        return "storage/products/{$imageName}"; // Trả về đường dẫn đã lưu
     }
     public function category($categorySlug, Request $request) {
         // Lấy danh mục theo slug
@@ -162,6 +108,29 @@ class ShopController extends Controller
 
         return view('front.shop.index', compact('categories', 'brands', 'products', 'tags'));
     }
+    public function subcategory($slug, Request $request)
+    {
+        $subCategory = \App\Models\SubCategory::where('slug', $slug)->first();
+
+        if (!$subCategory) {
+            abort(404);
+        }
+
+        $categories = Category::all();
+        $brands = Brand::all();
+        $tags = Tag::all();
+
+        $perPage = $request->show ?? 6;
+        $sortBy = $request->sort_by ?? 'latest';
+
+        $products = Product::where('sub_category_id', $subCategory->id)->where('status', 1);
+
+        $products = $this->filter($products, $request);
+        $products = $this->sortAndPagination($products, $sortBy, $perPage);
+
+        return view('front.shop.index', compact('categories', 'brands', 'tags', 'products'));
+    }
+
     public function sortAndPagination($products, $sortBy, $perPage)
     {
         switch ($sortBy) {

@@ -31,6 +31,8 @@ Route::prefix('shop')->group(function(){
     Route::post('/product/{id}', [Front\ShopController::class, 'postComment'])->name('front.product.comment');
     Route::get('/', [Front\ShopController::class, 'index'])->name('front.shop.index');
     Route::get('/{categorySlug}', [Front\ShopController::class, 'category'])->name('front.shop.category');
+    Route::get('/subcategory/{subcategorySlug}', [ShopController::class, 'subcategory'])->name('front.shop.subcategory');
+
 });
 
 Route::prefix('cart')->group(function(){

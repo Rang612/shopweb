@@ -29,7 +29,7 @@
                                 <div class="product-item item {{ $product->tags->isNotEmpty() ? $product->tags->first()->name : '' }}">
                                     <div class="pi-pic">
                                         <a href="{{ route('front.product.detail', $product->id) }}">
-                                            <img src="{{ asset('storage/products/' . $product->productImages->first()->image) }}" alt="Product Image">
+                                            <img src="{{ asset('uploads/products/large/' . $product->productImages->first()->image ?? 'default.jpg') }}" alt="Product Image">
                                         </a>
                                         @if($product->compare_price)
                                             <div class="sale">Sale</div>

@@ -79,6 +79,7 @@ class HomeController extends Controller
         $vouchers = DiscountCoupon::where('status', 1)
             ->where('expires_at', '>', now())
             ->get();
+
         // Gán dữ liệu vào mảng
         $data['womenProductsBySubcategory'] = $womenProductsBySubcategory;
         $data['womenSubCategories'] = $womenSubCategories;
@@ -87,6 +88,7 @@ class HomeController extends Controller
         $data['wishlistIds'] = $wishlistIds;
         $data['latestBlogs'] = $latestBlogs;
         $data['vouchers'] = $vouchers;
+//        dd($menProductsBySubcategory);
 
 //        dd($coupons);
         return view('front.index', $data);

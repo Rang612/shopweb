@@ -27,7 +27,7 @@ class CartController extends Controller
             // Lấy ảnh từ cột image trong bảng product_images
             $productImage = ProductImage::where('product_id', $id)->value('image');
             // Kiểm tra nếu không có ảnh thì dùng ảnh mặc định
-            $imagePath = $productImage ? asset('storage/products/' . $productImage) : asset('front/img/default-product.jpg');
+            $imagePath = $productImage ? asset('uploads/products/small/' . $productImage) : asset('front/img/default-product.jpg');
             Cart::add(
                 $productDetail->id, // ID biến thể sản phẩm
                 $product->title, // Tên sản phẩm

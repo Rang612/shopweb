@@ -118,7 +118,7 @@
                                         @php
                                           $productImage =  getProductImage($item->product_id);
                                         @endphp
-                                            <img class="img-fluid" src="{{ asset('storage/products/' . $productImage->image) }}" alt="Product Image">
+                                            <img class="img-fluid" src="{{ asset('uploads/products/small/' . $productImage->image) }}" alt="Product Image">
                                         </div>
                                         <div class="col">
                                             <!-- Title -->

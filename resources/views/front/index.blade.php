@@ -19,10 +19,9 @@
                         </div>
                     </div>
                     <div class="off-card">
-                        <h2>  Sale<span>50%</span></h2>
+                        <h2>Sale<span>50%</span></h2>
                     </div>
                 </div>
-
             </div>
             <div class="single-hero-items set-bg" data-setbg="front/img/hero-2.jpg">
                 <div class="container">
@@ -40,7 +39,6 @@
                         <h2> Sale<span>50%</span></h2>
                     </div>
                 </div>
-
             </div>
             <div class="single-hero-items set-bg" data-setbg="front/img/hero-3.jpg">
                 <div class="container">
@@ -58,12 +56,11 @@
                         <h2>Sale<span>50%</span></h2>
                     </div>
                 </div>
-
             </div>
-
         </div>
     </section>
-    <!--Here sectin end-->
+    <!--Here section end-->
+
     <!--Banner Section Begin-->
     <div class="banner-section spad">
         <div class="container-fluid">
@@ -71,19 +68,6 @@
                 @if(getCategories()->isNotEmpty())
                     @foreach(getCategories() as $category)
                 <div class="col-lg-4">
-{{--                    <div class="single-banner">--}}
-{{--                            <img src="{{asset('storage/'.$category->image)}}" alt="">--}}
-{{--                        @if(!empty($category->imgur_link))--}}
-{{--                            @php--}}
-{{--                                $imageData = base64_encode(file_get_contents($category->imgur_link));--}}
-{{--                                $src = 'data:image/jpeg;base64,' . $imageData;--}}
-{{--                            @endphp--}}
-{{--                            <img src="{{ $src }}" alt="Category Image">--}}
-{{--                        @endif--}}
-{{--                        <div class="inner-text">--}}
-{{--                            <h4> {{$category->name}}</h4>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
                     <div class="single-banner">
                         <img src="{{ asset('uploads/category/' . $category->image) }}" alt="{{ $category->name }}">
                         <div class="inner-text">
@@ -93,25 +77,6 @@
                 </div>
                     @endforeach
                 @endif
-{{--                <div class="col-lg-4">--}}
-{{--                    <div class="single-banner">--}}
-{{--                        <img src="front/img/banner-2.jpg" alt="">--}}
-{{--                        <div class="inner-text">--}}
-{{--                            <h4> Nữ</h4>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-
-{{--                </div>--}}
-
-{{--                <div class="col-lg-4">--}}
-{{--                    <div class="single-banner">--}}
-{{--                        <img src="front/img/banner-3.jpg" alt="">--}}
-{{--                        <div class="inner-text">--}}
-{{--                            <h4> Trẻ em</h4>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-
-{{--                </div>--}}
             </div>
         </div>
     </div>
@@ -136,9 +101,8 @@
                             @endforeach
                         </ul>
                     </div>
-
                     <!-- Owl Carousel cho "Tất cả" sản phẩm -->
-                    <div class="product-slider owl-carousel product-list all">
+                    <div class="product-slider owl-carousel product-list-women all">
                         @foreach($womenProductsBySubcategory as $subCategorySlug => $products)
                             @foreach($products as $product)
                                 <div class="item">
@@ -149,7 +113,7 @@
                     </div>
                     <!-- Owl Carousel cho từng subCategory -->
                     @foreach($womenProductsBySubcategory as $subCategorySlug => $products)
-                        <div class="product-slider owl-carousel product-list {{ $subCategorySlug }}" style="display: none;">
+                        <div class="product-slider owl-carousel product-list-women {{ $subCategorySlug }}" style="display: none;">
                             @foreach($products as $product)
                                 <div class="item">
                                     @include('front.components.product-item', ['product' => $product])
@@ -162,6 +126,8 @@
         </div>
     </section>
     <!--Women banner section end-->
+
+    <!--Voucher section begin-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
     <style>
         .voucher-carousel {
@@ -299,6 +265,7 @@
         });
     </script>
     <!--Voucher section end-->
+
     <!--Man Banner begin-->
     <section class="man-banner spad">
         <div class="container-fluid">
@@ -313,7 +280,7 @@
                         </ul>
                     </div>
                     <!-- Owl Carousel cho "Tất cả" sản phẩm -->
-                    <div class="product-slider owl-carousel product-list all">
+                    <div class="product-slider owl-carousel product-list-men all">
                         @foreach($menProductsBySubcategory as $subCategorySlug => $products)
                             @foreach($products as $product)
                                 <div class="item">
@@ -324,7 +291,7 @@
                     </div>
                     <!-- Owl Carousel cho từng subCategory -->
                     @foreach($menProductsBySubcategory as $subCategorySlug => $products)
-                        <div class="product-slider owl-carousel product-list {{ $subCategorySlug }}" style="display: none;">
+                        <div class="product-slider owl-carousel product-list-men {{ $subCategorySlug }}" style="display: none;">
                             @foreach($products as $product)
                                 <div class="item">
                                     @include('front.components.product-item', ['product' => $product])
@@ -336,7 +303,7 @@
                 <div class="col-lg-3">
                     <div class="product-large set-bg" data-setbg="front/img/products/man-large.jpg">
                         <h2>Man's</h2>
-                        <a href="#">Discover more</a>
+                        <a href="{{route('front.shop.category', 'men-product')}}">Discover more</a>
                     </div>
                 </div>
             </div>
@@ -358,7 +325,7 @@
                     <div class="col-lg-4 col-md-6">
                         <div class="single-latest-blog">
                             <a href="{{ route('front.blog.show', $blog->id) }}">
-                            <img src="{{ asset('storage/blogs/' . $blog->image) }}" alt="{{ $blog->title }}" class="img-fluid" style="height: 200px; width: 100%; object-fit: cover; border-radius: 5px;">
+                            <img src="{{ asset('uploads/blogs/' . $blog->image) }}" alt="{{ $blog->title }}" class="img-fluid" style="height: 200px; width: 100%; object-fit: cover; border-radius: 5px;">
                             <div class="latest-text">
                                 <div class="tag-list">
                                     <div class="tag-item">

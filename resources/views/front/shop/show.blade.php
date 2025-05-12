@@ -27,19 +27,11 @@
                 </div>
                 <div class="col-lg-9">
                     <div class="row">
-                        @if(isset($product) && !empty($product->productImages) && $product->productImages->count() > 0)
-                            @php
-                                $image = $product->productImages->first();
-                            @endphp
-                            @if(!empty($image->imgur_link))
-                                @php
-                                    $imageData = base64_encode(file_get_contents($image->imgur_link));
-                                    $src = 'data:image/jpeg;base64,' . $imageData;
-                                @endphp
-                            @endif
+                        @if(isset($product) && $product->productImages->isNotEmpty())
+                            @php $image = $product->productImages->first(); @endphp
                             <div class="col-lg-6">
                                 <div class="product-pic-zoom">
-                                    <img class="product-big-img" src="{{ $src }}" alt="Product Image">
+                                    <img class="product-big-img" src="{{ asset('uploads/products/large/' . $image->image) }}" alt="Product Image">
                                     <div class="zoom-icon">
                                         <i class="fa fa-search-plus"></i>
                                     </div>
@@ -48,27 +40,19 @@
                                     <div class="product-thumbs-track ps-slider owl-carousel">
                                         @foreach($product->productImages as $productImage)
                                             @php
-                                                $thumbSrc = null;
-                                                if (!empty($productImage->imgur_link)) {
-                                                    try {
-                                                        $thumbData = base64_encode(file_get_contents($productImage->imgur_link));
-                                                        $thumbSrc = 'data:image/jpeg;base64,' . $thumbData;
-                                                    } catch (Exception $e) {
-                                                        $thumbSrc = $productImage->imgur_link; // Nếu lỗi, fallback về link gốc
-                                                    }
-                                                }
+                                                $thumbSrc = asset('uploads/products/large/' . $productImage->image);
                                             @endphp
-                                            @if($thumbSrc)
-                                                <div class="pt active" data-imgbigurl="{{ $thumbSrc }}">
-                                                    <img src="{{ $thumbSrc }}" alt="Product Thumbnail">
-                                                </div>
-                                            @endif
+                                            <div class="pt" data-imgbigurl="{{ $thumbSrc }}">
+                                                <img src="{{ $thumbSrc }}" alt="Product Thumbnail">
+                                            </div>
                                         @endforeach
                                     </div>
                                 </div>
                             </div>
                         @else
-                            <p>No product images available.</p>
+                            <div class="col-lg-6">
+                                <p>No product images available.</p>
+                            </div>
                         @endif
                         <div class="col-lg-6">
                             <div class="product-details">
