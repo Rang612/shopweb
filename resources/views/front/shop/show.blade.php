@@ -168,10 +168,14 @@
                                         </a>
 
                                         <!-- Messenger Share -->
-                                        <a href="https://www.facebook.com/dialog/send?link={{ $productUrl }}&app_id={{ env('FB_APP_ID') }}&redirect_uri={{ $productUrl }}"
-                                           target="_blank" title="Share on Messenger">
+                                        <a href="https://www.facebook.com/dialog/send?
+                                        link={{ urlencode(url('/shop/product/' . $product->id)) }}
+                                        &app_id={{ env('FB_APP_ID') }}
+                                        &redirect_uri={{ urlencode(url('/shop/product/' . $product->id)) }}"
+                                           target="_blank">
                                             <i class="fab fa-facebook-messenger"></i>
                                         </a>
+
 
                                         <!-- Instagram (mở trang IG + copy link tự động) -->
                                         <a href="https://www.instagram.com/" target="_blank" onclick="copyProductLink('{{ url('/shop/product/' . $product->id) }}')" title="Copy link & share on Instagram">
