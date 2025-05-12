@@ -156,6 +156,11 @@
                                 <div class="pd-share">
                                     <div class="p-code"><span>Sku:</span> {{$product->sku}}</div>
                                     <div class="pd-social">
+                                        <!-- Copy link -->
+                                        <a href="javascript:void(0);" onclick="copyProductLink('{{ url()->current() }}')" title="Copy product link">
+                                            <i class="fa fa-link"></i>
+                                        </a>
+
                                         <!-- Facebook Share -->
                                         <a href="https://www.facebook.com/sharer/sharer.php?u={{ $productUrl }}"
                                            target="_blank" title="Share on Facebook">
@@ -411,6 +416,18 @@
     <!-- Realeted Products section end -->
 @endsection
 <script>
+    function copyProductLink(link) {
+        const tempInput = document.createElement("input");
+        tempInput.value = link;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand("copy");
+        document.body.removeChild(tempInput);
+        alert("Link copied to clipboard!");
+    }
+</script>
+<script>
+
     function addToWishList(id){
         $.ajax({
             url: '/wishlist/add-to-wishlist/' + id,
