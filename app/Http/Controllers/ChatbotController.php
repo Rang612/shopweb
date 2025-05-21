@@ -166,6 +166,10 @@ HTML;
             return response()->json(['reply' => nl2br(e($reply))]);
 
         } catch (\Throwable $e) {
+            \Log::error('Assistant connection failed', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             return response()->json(['reply' => 'Error connecting to assistant.'], 500);
         }
     }
