@@ -6,16 +6,21 @@ use App\Models\Wishlist;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
+use OpenAI;
 
 class AppServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
      */
-    public function register(): void
+        public function register(): void
     {
+        $this->app->singleton(OpenAI\Client::class, function () {
+            return OpenAI::client(env('OPENAI_API_KEY'));
+        });
+    }
 
-    }    /**
+     /**
      * Bootstrap any application services.
      */
 

@@ -68,7 +68,7 @@ class Product extends Model
     }
 
     public function orderDetail(){
-        return $this->hasMany(OrderItem::Detail::class,'product_id','id');
+        return $this->hasMany(OrderItem::class,'product_id','id');
     }
     public function tags()
     {

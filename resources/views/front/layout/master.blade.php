@@ -15,7 +15,6 @@
     <link rel="icon" type="image/png" href="{{ asset('front/img/logo-full2.png') }}">
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css?family=Muli:300,400,500,600,700,800,900&display=swap" rel="stylesheet">
-
     <!-- Css Styles -->
     <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css"  rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="front/css/bootstrap.min.css" type="text/css">
@@ -29,13 +28,92 @@
     <link rel="stylesheet" href="front/css/style.css" type="text/css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.css" rel="stylesheet">
-
-    <!-- Bootstrap CSS -->
-{{--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">--}}
+    <style>
+        .chatbot-float {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            z-index: 10000;
+            background-color: white;
+            border-radius: 50%;
+            padding: 8px;
+            box-shadow: 0 0 8px rgba(0,0,0,0.3);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 64px;
+            height: 64px;
+        }
+        .chatbot-popup {
+            position: fixed;
+            bottom: 170px;
+            right: 20px;
+            width: 340px;
+            height: 440px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 10000;
+        }
+        .chatbot-header {
+            background-color: #e7ab3c;
+            color: white;
+            padding: 10px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .chatbot-body {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            font-size: 14px;
+        }
+        .chatbot-body .msg {
+            padding: 8px 12px;
+            border-radius: 12px;
+            max-width: 75%;
+            word-wrap: break-word;
+        }
+        .chatbot-body .user { background: #dcf8c6; align-self: flex-end; }
+        .chatbot-body .bot { background: #eee; align-self: flex-start; }
+        .chatbot-input {
+            display: flex;
+            border-top: 1px solid #ddd;
+        }
+        .chatbot-input input {
+            flex: 1;
+            border: none;
+            padding: 10px;
+            font-size: 14px;
+            outline: none;
+        }
+        .chatbot-input button {
+            background-color: #e7ab3c;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+        /* Ensure Messenger float stays below chatbot */
+        .messenger-float {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999; /* Keep at 9999 or lower than chatbot's z-index */
+        }
+    </style>
 </head>
-
 <body>
-<!-- Start coding here -->
 <!--Page Preloder-->
 <div id="preloder">
     <div class="loader">
@@ -215,13 +293,11 @@
                 .nav-item .container .nav-depart .depart-btn{
                     background-color: #212529 !important;
                     color: #f5f5f5 !important;
-                    transition: background-color 0.5s ease; /* Cho mượt */
-
+                    transition: background-color 0.5s ease;
                 }
                 .nav-item .container .nav-depart .depart-btn:hover {
                     background-color: #e7ab3c !important;
-                    color: #f5f5f5 !important; /* Vẫn giữ màu chữ */
-
+                    color: #f5f5f5 !important;
                 }
             </style>
             <div class="nav-depart">
@@ -264,7 +340,6 @@
             <div id="mobile-menu-wrap"></div>
         </div>
     </div>
-
 </header>
 <!--Header section end-->
 
@@ -527,5 +602,62 @@
 <a href="https://m.me/rangrang0612" target="_blank" class="messenger-float" title="Chat with us on Messenger">
     <img src="https://img.icons8.com/color/48/facebook-messenger--v1.png" alt="Messenger">
 </a>
+<!-- Nút chatbot hình tròn -->
+<a href="javascript:void(0);" class="chatbot-float" id="openChatbot" title="Chat with XRAY AI">
+    <i class="fas fa-robot" style="font-size: 48px; color: #e7ab3c;"></i>
+</a>
+<!-- Khung chatbot nổi -->
+<div class="chatbot-popup" id="chatbotBox">
+    <div class="chatbot-header">
+        <span>XRAY Chatbot</span>
+        <button id="closeChatbot">✖</button>
+    </div>
+    <div class="chatbot-body" id="chatbotMessages"></div>
+    <div class="chatbot-input">
+        <input type="text" id="chatbotInput" placeholder="Type request..." />
+        <button id="chatbotSend">Send</button>
+    </div>
+</div>
+<script>
+    document.getElementById('openChatbot').addEventListener('click', () => {
+        document.getElementById('chatbotBox').style.display = 'flex';
+    });
+
+    document.getElementById('closeChatbot').addEventListener('click', () => {
+        document.getElementById('chatbotBox').style.display = 'none';
+    });
+
+    document.getElementById('chatbotSend').addEventListener('click', sendChat);
+    document.getElementById('chatbotInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') sendChat();
+    });
+
+    function sendChat() {
+        const msg = document.getElementById('chatbotInput').value.trim();
+        if (!msg) return;
+
+        const messages = document.getElementById('chatbotMessages');
+        messages.innerHTML += `<div class="msg user">${msg}</div>`;
+        document.getElementById('chatbotInput').value = '';
+        messages.scrollTop = messages.scrollHeight;
+
+        fetch('/chatbot', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name=\"csrf-token\"]').getAttribute('content')
+            },
+            body: JSON.stringify({ message: msg })
+        })
+            .then(res => res.json())
+            .then(data => {
+                messages.innerHTML += `<div class="msg bot">${data.reply}</div>`;
+                messages.scrollTop = messages.scrollHeight;
+            })
+            .catch(() => {
+                messages.innerHTML += `<div class="msg bot">Lỗi kết nối tới trợ lý.</div>`;
+            });
+    }
+</script>
 </body>
 </html>

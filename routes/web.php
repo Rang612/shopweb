@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ChatbotController;
 use \App\Http\Controllers\Front;
 use App\Http\Controllers\Front\BlogController;
 use App\Http\Controllers\Front\CheckOutController;
@@ -112,3 +113,4 @@ Route::get('/contact',[Front\PageController::class,'contact']);
 Route::get('/stores', [StoreController::class, 'index'])->name('stores.index');
 Route::get('/page/{slug}', [Front\PageController::class, 'page'])->name('page.show');
 Route::post('/contact/send', [Front\PageController::class, 'sendContactUsEmail'])->name('contact.send');
+Route::post('/chatbot', [ChatbotController::class, 'handle']);
