@@ -13,7 +13,8 @@ class ChatbotController extends Controller
         try {
             $userMessage = $request->input('message');
 
-            $client = OpenAI::client(env('OPENAI_API_KEY'));
+            $apiKey = config('services.openai.key') ?? env('OPENAI_API_KEY');
+            $client = OpenAI::client($apiKey);
 
             // 1. Tạo thread
             $thread = $client->threads()->create([]);
@@ -26,7 +27,7 @@ class ChatbotController extends Controller
 
             // 3. Tạo run
             $run = $client->threads()->runs()->create($thread->id, [
-                'assistant_id' => env('OPENAI_ASSISTANT_ID'),
+                'assistant_id' => config('services.openai.assistant') ?? env('OPENAI_ASSISTANT_ID'),
             ]);
 
             // 4. Đợi assistant xử lý
@@ -39,6 +40,7 @@ class ChatbotController extends Controller
            } while (!in_array($run->status, ['completed', 'requires_action']) && $attempt < $maxAttempts);
 
             if ($attempt >= $maxAttempts) {
+//                \Log::error('Run timed out after ' . $maxAttempts . ' attempts');
                 return response()->json(['reply' => 'Timeout while processing request.'], 500);
             }
 
@@ -100,6 +102,9 @@ class ChatbotController extends Controller
                             ->with('productImages')
                             ->take(5)
                             ->get();
+
+//                        \Log::info('Query results: ', $products->toArray());
+
                         // Render HTML
                         if ($products->isEmpty()) {
                             $toolOutputs[] = [
@@ -166,10 +171,6 @@ HTML;
             return response()->json(['reply' => nl2br(e($reply))]);
 
         } catch (\Throwable $e) {
-            \Log::error('Assistant connection failed', [
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
             return response()->json(['reply' => 'Error connecting to assistant.'], 500);
         }
     }
