@@ -36,7 +36,7 @@
                                             <div class="blog-item">
                                                 <a href="{{ route('front.blog.show', $blog->id) }}">
                                                     <div class="bi-pic">
-                                                        <img src="{{ asset('storage/blogs/' . $blog->image) }}" alt="Blog Image" class="img-fluid">
+                                                        <img src="{{ asset('uploads/blogs/' . $blog->image) }}" alt="Blog Image" class="img-fluid">
                                                     </div>
                                                     <div class="bi-text mt-2">
                                                         <h5 class="fw-bold">{{ $blog->title }}</h5>
