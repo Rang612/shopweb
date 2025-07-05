@@ -66,7 +66,7 @@ class ShopController extends Controller
         $tags = Tag::all(); // Lấy toàn bộ tags
 
         //get product
-        $perPage = $request->show ?? 3;
+        $perPage = 9;
         $sortBy = $request->sort_by ?? 'latest';
         $search = $request->search ?? '';
 

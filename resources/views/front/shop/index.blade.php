@@ -40,11 +40,6 @@
                                         <option {{ request('sort_by') == 'price-ascending' ? 'selected' : '' }} value="price-ascending">Price Ascending</option>
                                         <option {{ request('sort_by') == 'price-descending' ? 'selected' : '' }} value="price-descending">Price Descending</option>
                                     </select>
-                                    <select name="show" class="p-show" onchange="this.form.submit();">
-                                        <option {{ request('show') == '3' ? 'selected' : '' }} value="3">Show: 3</option>
-                                        <option {{ request('show') == '6' ? 'selected' : '' }} value="6">Show: 6</option>
-                                        <option {{ request('show') == '9' ? 'selected' : '' }} value="9">Show: 9</option>
-                                    </select>
                                 </div>
                             </form>
                         </div>
