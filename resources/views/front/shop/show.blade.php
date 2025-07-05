@@ -87,7 +87,7 @@
                                     @if($product->compare_price != null)
                                     <h4>{{ number_format($product->compare_price, 0, ',', '.') }} VND<span>{{ number_format($product->price, 0, ',', '.') }} VND</span></h4>  <!--giá sản phẩm-->
                                     @else
-                                    <h4>${{$product->price}}</h4>
+                                    <h4>{{ number_format($product->price, 0, ',', '.') }} VND</h4>
                                     @endif
                                 </div>
                                 <form action="{{ route('cart.add', $product->id) }}" method="POST">
