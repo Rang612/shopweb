@@ -127,6 +127,26 @@
                                     </label>
                                 </div>
                             </div>
+                            <style>
+                                input.form-check-input {
+                                    width: 1rem;
+                                    height: 1rem;
+                                    vertical-align: middle;
+                                    margin-top: 0.15em;
+                                    box-shadow: none;
+                                    appearance: auto;
+                                    -webkit-appearance: auto;
+                                }
+                            </style>
+                            <div class="form-check mt-3 mb-3" style="transform: translateY(-4px);">
+                                <input class="form-check-input" type="checkbox" id="agree_terms" name="agree_terms" required>
+                                <label class="form-check-label" for="agree_terms">
+                                    I agree to the <a href="{{ route('page.show', 'terms-conditions') }}" target="_blank">terms and conditions</a> of your website.
+                                </label>
+                            </div>
+
+
+
                             <div class="order-btn">
                                 <button type="submit" class="site-btn place-btn">Place Order</button>
                             </div>

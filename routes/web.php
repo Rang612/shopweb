@@ -52,15 +52,43 @@ Route::prefix('checkout')->group(function(){
     Route::get('/result',[Front\CheckOutController::class,'result']);
     Route::post('/checkout/shipping-cost', [CheckoutController::class, 'getShippingCost'])->name('checkout.shipping-cost');
     Route::get('/proxy/provinces', function () {
-        return Http::get('https://provinces.open-api.vn/api/p/?depth=2')->body();
+        try {
+            $http = app()->environment('local')
+                ? Http::withoutVerifying()
+                : Http::withOptions(['verify' => true]);
+
+            $response = $http->get('https://provinces.open-api.vn/api/?depth=2');
+
+            return $response->throw()->json();
+        } catch (\Exception $e) {
+            Log::error('Lỗi khi gọi provinces API: ' . $e->getMessage());
+            return response()->json(['error' => 'Không thể tải dữ liệu tỉnh'], 500);
+        }
     });
     Route::get('/proxy/provinces/{cityCode}', function ($cityCode) {
-        return Http::get("https://provinces.open-api.vn/api/p/{$cityCode}?depth=2")->body();
+        try {
+            $http = app()->environment('local')
+                ? Http::withoutVerifying()
+                : Http::withOptions(['verify' => true]);
+            $response = $http->get("https://provinces.open-api.vn/api/p/{$cityCode}?depth=2");
+            return $response->throw()->json();
+        } catch (\Exception $e) {
+            \Log::error("Lỗi khi gọi districts API của tỉnh {$cityCode}: " . $e->getMessage());
+            return response()->json(['error' => 'Không thể tải danh sách quận/huyện'], 500);
+        }
     });
     Route::get('/proxy/districts/{districtCode}', function ($districtCode) {
-        return Http::get("https://provinces.open-api.vn/api/d/{$districtCode}?depth=2")->body();
+        try {
+            $http = app()->environment('local')
+                ? Http::withoutVerifying()
+                : Http::withOptions(['verify' => true]);
+            $response = $http->get("https://provinces.open-api.vn/api/d/{$districtCode}?depth=2");
+            return $response->throw()->json();
+        } catch (\Exception $e) {
+            Log::error("Lỗi khi gọi wards API của quận {$districtCode}: " . $e->getMessage());
+            return response()->json(['error' => 'Không thể tải danh sách phường/xã'], 500);
+        }
     });
-
     Route::get('/vnpay/{order}', [VNPayController::class, 'createPayment'])->name('vnpay.checkout');
     Route::get('/vnpay-return', [VNPayController::class, 'vnpayReturn'])->name('vnpay.return');
 });
